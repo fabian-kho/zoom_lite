@@ -1,76 +1,105 @@
 import 'package:flutter/material.dart';
 import 'package:zoom_lite/components/list_item.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:zoom_lite/pages/create_presentation_dialog.dart';
+import 'package:zoom_lite/pages/presentaion_page.dart';
 
 class LandingPage extends StatelessWidget {
-  const LandingPage({super.key, required this.title});
+  const LandingPage({Key? key, required this.title}) : super(key: key);
   final String title;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
-        titleTextStyle: const TextStyle(
-          fontSize: 24,
-          fontWeight: FontWeight.w600,
-          color: Colors.black
-        )
-      ),
+          title: Text(title),
+          titleTextStyle: const TextStyle(
+              fontSize: 24, fontWeight: FontWeight.w600, color: Colors.black)),
       // use search field component
       body: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-        child: Column(
-          children: [
-            const SearchBox(),
-            // use list view component
-            Expanded(
-              child: ListView(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(top: 30, bottom: 20),
-                    child: const Text(
-                      'Recent Presentations',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                  ListItem(title: 'Accessibility', thumbnailPath: 'assets/images/slide1.png', onTap: () {}),
-                  ListItem(title: 'Accessibility', thumbnailPath: 'assets/images/slide1.png', onTap: () {}),
-                  ListItem(title: 'Accessibility', thumbnailPath: 'assets/images/slide1.png', onTap: () {}),
-                  ListItem(title: 'Accessibility', thumbnailPath: 'assets/images/slide1.png', onTap: () {}),
-                  ListItem(title: 'Accessibility', thumbnailPath: 'assets/images/slide1.png', onTap: () {}),
-                  ListItem(title: 'Accessibility', thumbnailPath: 'assets/images/slide1.png', onTap: () {}),
-                  ListItem(title: 'Accessibility', thumbnailPath: 'assets/images/slide1.png', onTap: () {}),
-                  ListItem(title: 'Accessibility', thumbnailPath: 'assets/images/slide1.png', onTap: () {}),
-                ],
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          child: Column(
+            children: [
+              SearchBox(),
+              // use list view component
+              const SizedBox(height: 20),
+              const Text(
+                'Recent Presentations',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-            ),
-          ],
-        )
-      ),
+              const SizedBox(height: 10),
+              Expanded(
+                child: ListView(
+                  children: [
+                    ListItem(
+                      title: 'Accessibility',
+                      thumbnailPath: 'assets/images/slide1.png',
+                      onTap: () {
+                        // Start the presentation
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                const PresentationPage(title: 'Accessibility'),
+                          ),
+                        );
+                      },
+                    ),
+                    ListItem(
+                      title: 'Mobile Storage 1',
+                      thumbnailPath: 'assets/images/slide2.png',
+                      onTap: () {
+                        // Start the presentation
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const PresentationPage(
+                                title: 'Mobile Storage 1'),
+                          ),
+                        );
+                      },
+                    ),
+                    ListItem(
+                      title: 'Mobile Storage 2',
+                      thumbnailPath: 'assets/images/slide3.png',
+                      onTap: () {
+                        // Start the presentation
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const PresentationPage(
+                                title: 'Mobile Storage 2'),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          )),
       //FAB bottom right corner with a plus icon
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // open Dialog to create a new presentation
           showDialog(
-            context: context,
-            builder: (context) => const CreatePresentationDialog(),
-          );
+              context: context,
+              builder: (context) => const CreatePresentationDialog());
         },
         child: const Icon(Icons.add),
       ),
-
-
     );
   }
 }
 
 class SearchBox extends StatelessWidget {
-  const SearchBox({
-    super.key,
-  });
+  final List<String> allPresentations = [
+    'Accessibility',
+    'Mobile Storage 1',
+    'Mobile Storage 2'
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +109,18 @@ class SearchBox extends StatelessWidget {
         color: Colors.grey[200],
         borderRadius: BorderRadius.circular(10),
       ),
-      child: const TextField(
+      child: TextField(
+        onChanged: (value) {
+          final filteredPresentations = allPresentations
+              .where((presentation) =>
+                  presentation.toLowerCase().contains(value.toLowerCase()))
+              .toList();
+
+          // Weiterverarbeitung der gefilterten Präsentationen
+          // Hier können Sie die Ergebnisse anzeigen oder speichern
+
+          print(filteredPresentations);
+        },
         decoration: InputDecoration(
           contentPadding: EdgeInsets.all(10),
           prefixIcon: Icon(Icons.search),
@@ -90,7 +130,7 @@ class SearchBox extends StatelessWidget {
           ),
           border: InputBorder.none,
           hintText: 'Search for presentations',
-          hintStyle: TextStyle(
+          hintStyle: const TextStyle(
             fontSize: 16,
             color: Colors.grey,
           ),
@@ -98,69 +138,4 @@ class SearchBox extends StatelessWidget {
       ),
     );
   }
-}
-
-// dialog widget to create a new presentation
-// heading: Create a new presentation
-// body:
-// - TextField to enter presentation name
-// - hint that only pdf files are supported
-// actions: Cancel and Upload buttons
-// Upload button should open the file picker from the file_picker package
-
-class CreatePresentationDialog extends StatelessWidget {
-  const CreatePresentationDialog({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text('Create a new presentation'),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: const [
-          TextField(
-            decoration: InputDecoration(
-              hintText: 'Enter presentation name',
-            ),
-          ),
-          SizedBox(height: 10),
-          Text(
-            'Only PDF files are supported',
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey,
-            ),
-          ),
-        ],
-      ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: const Text('Cancel'),
-        ),
-        TextButton(
-          onPressed: () async {
-            // open file picker
-            _pickFile();
-            // if file is selected, close dialog and navigate to presentation page
-            // if (result != null) {
-            //   Navigator.of(context).pop();
-            //   Navigator.of(context).pushNamed('/presentation');
-            // }
-          },
-          child: const Text('Upload'),
-        ),
-      ],
-    );
-  }
-}
-
-
-void _pickFile() async {
-  FilePickerResult? result = await FilePicker.platform.pickFiles(
-    type: FileType.custom,
-    allowedExtensions: ['pdf'],
-  );
 }
