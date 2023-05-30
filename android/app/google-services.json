@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "344168727007",
+    "firebase_url": "https://zoom-lite-8c2e5-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "zoom-lite-8c2e5",
+    "storage_bucket": "zoom-lite-8c2e5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:344168727007:android:2f0285b7a1d2f5da7a046a",
+        "android_client_info": {
+          "package_name": "com.example.zoom_lite"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "344168727007-f08o1gslcmlmh0gnt930n6kjdipp94ho.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJttflY4sWWRScLMGSQVSqHsvivm1Zmyg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "344168727007-f08o1gslcmlmh0gnt930n6kjdipp94ho.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

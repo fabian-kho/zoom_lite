@@ -1,10 +1,19 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:zoom_lite/components/list_item.dart';
 import 'package:file_picker/file_picker.dart';
+import 'dart:math';
 
 class LandingPage extends StatelessWidget {
   const LandingPage({super.key, required this.title});
   final String title;
+  // test realtime Database
+  void testRealtimeDatabase() {
+    final DatabaseReference testRef = FirebaseDatabase.instance.ref(
+        "Hello world!").child("test");
+    testRef.set("Hello world! ${Random().nextInt(100)}");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,11 +45,11 @@ class LandingPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  ListItem(title: 'Accessibility', thumbnailPath: 'assets/images/slide1.png', onTap: () {}),
-                  ListItem(title: 'Accessibility', thumbnailPath: 'assets/images/slide1.png', onTap: () {}),
-                  ListItem(title: 'Accessibility', thumbnailPath: 'assets/images/slide1.png', onTap: () {}),
-                  ListItem(title: 'Accessibility', thumbnailPath: 'assets/images/slide1.png', onTap: () {}),
-                  ListItem(title: 'Accessibility', thumbnailPath: 'assets/images/slide1.png', onTap: () {}),
+                  ListItem(title: 'Accessibility', thumbnailPath: 'assets/images/slide1.png', onTap: () { testRealtimeDatabase();}),
+                  ListItem(title: 'Accessibility', thumbnailPath: 'assets/images/slide1.png', onTap: () {testRealtimeDatabase();}),
+                  ListItem(title: 'Accessibility', thumbnailPath: 'assets/images/slide1.png', onTap: () {testRealtimeDatabase();}),
+                  ListItem(title: 'Accessibility', thumbnailPath: 'assets/images/slide1.png', onTap: () {testRealtimeDatabase();}),
+                  ListItem(title: 'Accessibility', thumbnailPath: 'assets/images/slide1.png', onTap: () {testRealtimeDatabase();}),
                   ListItem(title: 'Accessibility', thumbnailPath: 'assets/images/slide1.png', onTap: () {}),
                   ListItem(title: 'Accessibility', thumbnailPath: 'assets/images/slide1.png', onTap: () {}),
                   ListItem(title: 'Accessibility', thumbnailPath: 'assets/images/slide1.png', onTap: () {}),
