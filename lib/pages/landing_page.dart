@@ -1,11 +1,19 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:zoom_lite/components/list_item.dart';
 import 'package:zoom_lite/pages/create_presentation_dialog.dart';
-import 'package:zoom_lite/pages/presentaion_page.dart';
+import 'package:zoom_lite/pages/presentation_page.dart';
+import 'dart:math';
 
 class LandingPage extends StatelessWidget {
   const LandingPage({Key? key, required this.title}) : super(key: key);
   final String title;
+  // test realtime Database
+  void testRealtimeDatabase() {
+    final DatabaseReference testRef = FirebaseDatabase.instance.ref(
+        "Hello world!").child("test");
+    testRef.set("Hello world! ${Random().nextInt(100)}");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +45,7 @@ class LandingPage extends StatelessWidget {
                       title: 'Accessibility',
                       thumbnailPath: 'assets/images/slide1.png',
                       onTap: () {
+                        testRealtimeDatabase();
                         // Start the presentation
                         Navigator.push(
                           context,
@@ -101,6 +110,8 @@ class SearchBox extends StatelessWidget {
     'Mobile Storage 2'
   ];
 
+  SearchBox({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -121,7 +132,7 @@ class SearchBox extends StatelessWidget {
 
           print(filteredPresentations);
         },
-        decoration: InputDecoration(
+        decoration: const InputDecoration(
           contentPadding: EdgeInsets.all(10),
           prefixIcon: Icon(Icons.search),
           prefixIconConstraints: BoxConstraints(
@@ -130,7 +141,7 @@ class SearchBox extends StatelessWidget {
           ),
           border: InputBorder.none,
           hintText: 'Search for presentations',
-          hintStyle: const TextStyle(
+          hintStyle: TextStyle(
             fontSize: 16,
             color: Colors.grey,
           ),
