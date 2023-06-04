@@ -29,6 +29,7 @@ class _CreatePresentationDialogState extends State<CreatePresentationDialog> {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          //TODO: Add validation
           TextField(
             controller: _textFieldController,
             decoration: const InputDecoration(

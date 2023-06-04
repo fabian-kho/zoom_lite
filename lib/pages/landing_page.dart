@@ -43,6 +43,7 @@ class _LandingPageState extends State<LandingPage> {
             const SizedBox(height: 10),
             Expanded(
               child: StreamBuilder(
+                //TODO: Display first page from pdf as a thumbnail
                 stream: _databaseRef.onValue,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
