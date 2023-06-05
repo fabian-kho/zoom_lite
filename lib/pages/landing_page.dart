@@ -36,7 +36,7 @@ class LandingPage extends StatelessWidget {
                     ListItem(
                       title: 'Accessibility',
                       thumbnailPath: 'assets/images/slide1.png',
-                      onTap: () {
+                      onTap: () async {
                         // Start the presentation
                         Navigator.push(
                           context,

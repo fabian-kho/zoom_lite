@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:zoom_lite/pages/presentaion_page.dart';
+import 'package:zoom_lite/pages/presentation_page.dart';
 
 // dialog widget to create a new presentation
 // heading: Create a new presentation
@@ -52,18 +52,18 @@ class CreatePresentationDialog extends StatelessWidget {
 
             if (result != null) {
               // Verarbeiten der ausgewählten Datei
-              final filePath = result.files.single.path;
+              final filePath = result.files.single.path!;
               // Führen Sie Aktionen mit dem Dateipfad aus, z. B. das Importieren der Präsentationn
 
               // Close the dialog
-              Navigator.of(context).pop();
+              Navigator.of(context).pop(filePath);
 
               // Navigate to the presentation page
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) =>
-                      PresentationPage(title: 'Imported Presentation'),
+                  builder: (context) => PresentationPage(
+                      title: 'Imported Presentation', filePath: filePath),
                 ),
               );
             }
