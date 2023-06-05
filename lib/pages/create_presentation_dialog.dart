@@ -62,7 +62,6 @@ class _CreatePresentationDialogState extends State<CreatePresentationDialog> {
 
             if (result != null) {
               final filePath = result.files.single.path;
-              print(filePath);
 
               final firebase_storage.FirebaseStorage storage = firebase_storage.FirebaseStorage.instance;
               final firebase_storage.Reference storageRef = storage.ref().child('presentations').child(_textFieldController.text);
@@ -77,6 +76,11 @@ class _CreatePresentationDialogState extends State<CreatePresentationDialog> {
                   });
 
                   if (!mounted) return;
+
+                  //TODO: Add a loading screen/dialog after the user picked a file
+
+
+
                   Navigator.push(
                     context,
                     MaterialPageRoute(
