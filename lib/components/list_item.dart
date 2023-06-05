@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 class ListItem extends StatelessWidget {
-  const ListItem({Key? key, required this.title, required this.thumbnailPath, required this.onTap})
+  const ListItem({Key? key, required this.title, required this.thumbnail, required this.onTap})
       : super(key: key);
   final String title;
   final VoidCallback onTap;
-  final String thumbnailPath;
+  final Image thumbnail;
 
   @override
   Widget build(BuildContext context) {
@@ -31,10 +31,7 @@ class ListItem extends StatelessWidget {
           child: ClipRRect(
             borderRadius: const BorderRadius.all(Radius.circular(8)),
             // set image to thumbnailPath
-            child: Image(
-              image: AssetImage(thumbnailPath), // Use the thumbnailPath variable as the asset path
-              fit: BoxFit.cover,
-            ),
+            child: thumbnail,
           ),
         ),
       ),

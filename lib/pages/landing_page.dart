@@ -14,7 +14,58 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage> {
-  final DatabaseReference _databaseRef = FirebaseDatabase.instance.ref().child('presentations');
+  final DatabaseReference _databaseRef =
+  FirebaseDatabase.instance.ref().child('presentations');
+
+  List<ListItem> allPresentations = [];
+  List<ListItem> filteredPresentations = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchPresentations();
+  }
+
+  void _fetchPresentations() {
+    _databaseRef.once().then((source) {
+      final data = source.snapshot.value as Map<dynamic, dynamic>?;
+      if (data != null) {
+        allPresentations = data.entries.map((entry) {
+          final key = entry.key;
+          final value = entry.value as Map<dynamic, dynamic>;
+          return ListItem(
+            key: Key(key),
+            title: value['name'] ?? '',
+            thumbnail: Image.asset(
+              'assets/images/placeholder.png',
+              fit: BoxFit.cover,
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => PresentationPage(title: value['name']),
+                ),
+              );
+            },
+          );
+        }).toList();
+        setState(() {
+          filteredPresentations = allPresentations;
+        });
+      }
+    });
+  }
+
+  void _filterPresentations(String query) {
+    setState(() {
+      filteredPresentations = allPresentations.where((presentation) {
+        final title = presentation.title.toLowerCase();
+        final queryLower = query.toLowerCase();
+        return title.contains(queryLower);
+      }).toList();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +82,9 @@ class _LandingPageState extends State<LandingPage> {
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
         child: Column(
           children: [
-            SearchBox(),
+            SearchBox(
+              onSearchChanged: _filterPresentations,
+            ),
             const SizedBox(height: 20),
             const Text(
               'Recent Presentations',
@@ -42,43 +95,8 @@ class _LandingPageState extends State<LandingPage> {
             ),
             const SizedBox(height: 10),
             Expanded(
-              child: StreamBuilder(
-                //TODO: Display first page from pdf as a thumbnail
-                stream: _databaseRef.onValue,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    final presentations = <ListItem>[];
-
-                    final data = snapshot.data?.snapshot.value;
-                    if (data != null && data is Map) {
-                      data.forEach((key, value) {
-                        presentations.add(
-                          ListItem(
-                            title: value['name'] ?? '',
-                            thumbnailPath: value['thumbnailPath'] ?? '',
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      PresentationPage(title: value['name']),
-                                ),
-                              );
-                            },
-                          ),
-                        );
-                      });
-                    }
-
-                    return ListView(
-                      children: presentations,
-                    );
-                  } else {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                },
+              child: ListView(
+                children: filteredPresentations,
               ),
             ),
           ],
@@ -98,6 +116,10 @@ class _LandingPageState extends State<LandingPage> {
 }
 
 class SearchBox extends StatelessWidget {
+  final Function(String) onSearchChanged;
+
+  const SearchBox({required this.onSearchChanged});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -107,9 +129,7 @@ class SearchBox extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
       ),
       child: TextField(
-        onChanged: (value) {
-          // Filter presentations based on search value
-        },
+        onChanged: onSearchChanged,
         decoration: const InputDecoration(
           contentPadding: EdgeInsets.all(10),
           prefixIcon: Icon(Icons.search),
