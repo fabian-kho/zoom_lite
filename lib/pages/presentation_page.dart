@@ -41,7 +41,7 @@ class _PresentationPageState extends State<PresentationPage> {
   }
 
   void goToPreviousPage() {
-    if (currentPage > 0) {
+    if (currentPage > 1) {
       setState(() {
         currentPage--;
       });
@@ -56,6 +56,8 @@ class _PresentationPageState extends State<PresentationPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isFirstPage = currentPage == 1;
+    final isLastPage = currentPage == document?.pageCount;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -98,11 +100,11 @@ class _PresentationPageState extends State<PresentationPage> {
           children: [
             IconButton(
               icon: const Icon(Icons.arrow_back_ios),
-              onPressed: goToPreviousPage,
+              onPressed: isFirstPage ? null : goToPreviousPage,
             ),
             IconButton(
               icon: const Icon(Icons.arrow_forward_ios),
-              onPressed: goToNextPage,
+              onPressed: isLastPage ? null : goToNextPage,
             ),
           ],
         ),
