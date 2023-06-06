@@ -53,7 +53,8 @@ class CreatePresentationDialog extends StatelessWidget {
             if (result != null) {
               // Verarbeiten der ausgewählten Datei
               final filePath = result.files.single.path!;
-              // Führen Sie Aktionen mit dem Dateipfad aus, z. B. das Importieren der Präsentationn
+              // Führen Sie Aktionen mit dem Dateipfad
+              //aus, z. B. das Importieren der Präsentationn
 
               // Close the dialog
               Navigator.of(context).pop(filePath);
