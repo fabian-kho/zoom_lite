@@ -6,7 +6,9 @@ class PresentationPage extends StatefulWidget {
   final String title;
   final String filePath;
 
-  const PresentationPage({Key? key, required this.title, required this.filePath}) : super(key: key);
+  const PresentationPage(
+      {Key? key, required this.title, required this.filePath})
+      : super(key: key);
 
   @override
   State createState() => _PresentationPageState();
@@ -59,7 +61,8 @@ class _PresentationPageState extends State<PresentationPage> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Confirmation'),
-        content: const Text('Ending the presentation will disconnect all viewers. Are you sure you want to end the presentation?'),
+        content: const Text(
+            'Ending the presentation will disconnect all viewers. Are you sure you want to end the presentation?'),
         actions: <Widget>[
           TextButton(
             child: const Text('CANCEL'),
@@ -93,7 +96,7 @@ class _PresentationPageState extends State<PresentationPage> {
             onPressed: () async {
               final shouldEndPresentation = await showExitConfirmationDialog();
               if (shouldEndPresentation == true) {
-                if(!mounted) return;
+                if (!mounted) return;
                 Navigator.pop(context);
               }
             },
@@ -102,22 +105,23 @@ class _PresentationPageState extends State<PresentationPage> {
         ),
         body: document != null
             ? Center(
-          child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 10),
-            child: AspectRatio(
-              aspectRatio: 16 / 9,
-              child: PdfDocumentLoader.openAsset(
-                  widget.filePath,
-                  onError: (err) => print(err),
-                  pageNumber: currentPage,
-                  pageBuilder: (context, textureBuilder, pageSize) => textureBuilder()
-              ),
-            ),
-          ),
-        )
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 10),
+                  child: AspectRatio(
+                    aspectRatio: isVerticalMode ? 16 / 9 : 9 / 16,
+                    child: PdfDocumentLoader.openAsset(
+                      widget.filePath,
+                      onError: (err) => print(err),
+                      pageNumber: currentPage,
+                      pageBuilder: (context, textureBuilder, pageSize) =>
+                          textureBuilder(),
+                    ),
+                  ),
+                ),
+              )
             : const Center(
-          child: CircularProgressIndicator(),
-        ),
+                child: CircularProgressIndicator(),
+              ),
         bottomNavigationBar: BottomAppBar(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -129,6 +133,12 @@ class _PresentationPageState extends State<PresentationPage> {
               IconButton(
                 icon: const Icon(Icons.arrow_forward_ios),
                 onPressed: isLastPage ? null : goToNextPage,
+              ),
+              IconButton(
+                icon: Icon(isVerticalMode
+                    ? Icons.screen_lock_portrait
+                    : Icons.screen_lock_landscape),
+                onPressed: toggleOrientation,
               ),
             ],
           ),
