@@ -98,14 +98,6 @@ class _PresentationPageState extends State<PresentationPage> {
             },
           ),
           title: Text(widget.title),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.settings),
-              onPressed: () {
-                // Open settings
-              },
-            ),
-          ],
         ),
         body: document != null
             ? Center(
