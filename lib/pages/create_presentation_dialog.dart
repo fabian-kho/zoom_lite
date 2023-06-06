@@ -15,6 +15,7 @@ class CreatePresentationDialog extends StatefulWidget {
 class _CreatePresentationDialogState extends State<CreatePresentationDialog> {
   final DatabaseReference _databaseRef = FirebaseDatabase.instance.ref();
   final TextEditingController _textFieldController = TextEditingController();
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -61,6 +62,10 @@ class _CreatePresentationDialogState extends State<CreatePresentationDialog> {
             );
 
             if (result != null) {
+              setState(() {
+                _isLoading = true;
+              });
+
               final filePath = result.files.single.path;
 
               final firebase_storage.FirebaseStorage storage = firebase_storage.FirebaseStorage.instance;
@@ -74,27 +79,24 @@ class _CreatePresentationDialogState extends State<CreatePresentationDialog> {
                     'name': _textFieldController.text,
                     'file_path': downloadUrl,
                   });
-
-                  if (!mounted) return;
-
-                  //TODO: Add a loading screen/dialog after the user picked a file
-
-
-
+                } catch (e) {
+                  print('Error uploading file: $e');
+                  showErrorDialog();
+                } finally {
+                  setState(() {
+                    _isLoading = false;
+                  });
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => PresentationPage(title: _textFieldController.text),
                     ),
                   );
-                } catch (e) {
-                  print('Error uploading file: $e');
-                  showErrorDialog();
                 }
               });
             }
           },
-          child: const Text('Upload'),
+          child: _isLoading ? const CircularProgressIndicator() : const Text('Upload'),
         ),
       ],
     );

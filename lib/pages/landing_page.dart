@@ -1,6 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:zoom_lite/components/list_item.dart';
+import 'package:zoom_lite/models/presentation.dart';
 import 'package:zoom_lite/pages/create_presentation_dialog.dart';
 import 'package:zoom_lite/pages/presentation_page.dart';
 
@@ -28,32 +29,36 @@ class _LandingPageState extends State<LandingPage> {
 
   void _fetchPresentations() {
     _databaseRef.onValue.listen((event) {
-      final data = event.snapshot.value as Map<dynamic, dynamic>?;
-      if (data != null) {
-        allPresentations = data.entries.map((entry) {
-          final key = entry.key;
-          final value = entry.value as Map<dynamic, dynamic>;
-          return ListItem(
-            key: Key(key),
-            title: value['name'] ?? '',
-            thumbnail: Image.asset(
-              'assets/images/placeholder.png',
-              fit: BoxFit.cover,
-            ),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => PresentationPage(title: value['name']),
-                ),
-              );
-            },
-          );
-        }).toList();
-        setState(() {
-          filteredPresentations = allPresentations;
-        });
+      if (event.snapshot.value == null) {
+        return;
       }
+      final data = Map<String, dynamic>.from(event.snapshot.value as Map<dynamic, dynamic>);
+      print(data);
+      allPresentations = data.entries.map((entry) {
+        final key = entry.key;
+        print(entry.value);
+        Map<String, dynamic> _presentation = Map<String, dynamic>.from(entry.value as Map<dynamic, dynamic>);
+        final presentation = Presentation.fromRTDB(_presentation);
+        return ListItem(
+          key: Key(key),
+          title: presentation.title,
+          thumbnail: Image.asset(
+            'assets/images/placeholder.png',
+            fit: BoxFit.cover,
+          ),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PresentationPage(title: presentation.title),
+              ),
+            );
+          },
+        );
+      }).toList();
+      setState(() {
+        filteredPresentations = allPresentations;
+      });
     });
   }
 
