@@ -27,8 +27,8 @@ class _LandingPageState extends State<LandingPage> {
   }
 
   void _fetchPresentations() {
-    _databaseRef.once().then((source) {
-      final data = source.snapshot.value as Map<dynamic, dynamic>?;
+    _databaseRef.onValue.listen((event) {
+      final data = event.snapshot.value as Map<dynamic, dynamic>?;
       if (data != null) {
         allPresentations = data.entries.map((entry) {
           final key = entry.key;
