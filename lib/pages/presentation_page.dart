@@ -54,61 +54,93 @@ class _PresentationPageState extends State<PresentationPage> {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final isFirstPage = currentPage == 1;
-    final isLastPage = currentPage == document?.pageCount;
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: Text(widget.title),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.settings),
+  Future<bool> showExitConfirmationDialog() async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Confirmation'),
+        content: const Text('Ending the presentation will disconnect all viewers. Are you sure you want to end the presentation?'),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('CANCEL'),
             onPressed: () {
-              // Open settings
+              Navigator.of(context).pop(false);
+            },
+          ),
+          TextButton(
+            child: const Text('END PRESENTATION'),
+            onPressed: () {
+              Navigator.of(context).pop(true);
             },
           ),
         ],
       ),
-      body: document != null
-          ? Center(
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 10),
-              child: AspectRatio(
-                aspectRatio: 16 / 9,
-                child: PdfDocumentLoader.openAsset(
-                    widget.filePath,
-                    onError: (err) => print(err),
-                    pageNumber: currentPage,
-                    pageBuilder: (context, textureBuilder, pageSize) => textureBuilder()
-                ),
-              ),
-            ),
-          )
-          : const Center(
-        child: CircularProgressIndicator(),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
+    );
+
+    return result ?? false;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isFirstPage = currentPage == 1;
+    final isLastPage = currentPage == document?.pageCount;
+    return WillPopScope(
+      onWillPop: showExitConfirmationDialog,
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () async {
+              final shouldEndPresentation = await showExitConfirmationDialog();
+              if (shouldEndPresentation == true) {
+                Navigator.pop(context);
+              }
+            },
+          ),
+          title: Text(widget.title),
+          actions: [
             IconButton(
-              icon: const Icon(Icons.arrow_back_ios),
-              onPressed: isFirstPage ? null : goToPreviousPage,
-            ),
-            IconButton(
-              icon: const Icon(Icons.arrow_forward_ios),
-              onPressed: isLastPage ? null : goToNextPage,
+              icon: const Icon(Icons.settings),
+              onPressed: () {
+                // Open settings
+              },
             ),
           ],
         ),
-      )
+        body: document != null
+            ? Center(
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 10),
+            child: AspectRatio(
+              aspectRatio: 16 / 9,
+              child: PdfDocumentLoader.openAsset(
+                  widget.filePath,
+                  onError: (err) => print(err),
+                  pageNumber: currentPage,
+                  pageBuilder: (context, textureBuilder, pageSize) => textureBuilder()
+              ),
+            ),
+          ),
+        )
+            : const Center(
+          child: CircularProgressIndicator(),
+        ),
+        bottomNavigationBar: BottomAppBar(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.arrow_back_ios),
+                onPressed: isFirstPage ? null : goToPreviousPage,
+              ),
+              IconButton(
+                icon: const Icon(Icons.arrow_forward_ios),
+                onPressed: isLastPage ? null : goToNextPage,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
