@@ -50,7 +50,7 @@ class _LandingPageState extends State<LandingPage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => PresentationPage(title: presentation.title),
+                builder: (context) => PresentationPage(title: presentation.title, filePath: 'assets/presentations/example.pdf',),
               ),
             );
           },

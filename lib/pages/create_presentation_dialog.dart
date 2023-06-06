@@ -89,7 +89,7 @@ class _CreatePresentationDialogState extends State<CreatePresentationDialog> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => PresentationPage(title: _textFieldController.text),
+                      builder: (context) => PresentationPage(title: _textFieldController.text, filePath: 'assets/presentations/example.pdf',),
                     ),
                   );
                 }

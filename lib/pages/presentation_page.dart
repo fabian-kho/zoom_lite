@@ -4,8 +4,9 @@ import 'package:pdf_render/pdf_render_widgets.dart';
 
 class PresentationPage extends StatefulWidget {
   final String title;
+  final String filePath;
 
-  const PresentationPage({Key? key, required this.title}) : super(key: key);
+  const PresentationPage({Key? key, required this.title, required this.filePath}) : super(key: key);
 
   @override
   State createState() => _PresentationPageState();
@@ -25,7 +26,7 @@ class _PresentationPageState extends State<PresentationPage> {
   }
 
   void loadDocument() async {
-    final doc = await PdfDocument.openAsset('assets/presentations/example.pdf');
+    final doc = await PdfDocument.openAsset(widget.filePath);
     setState(() {
       document = doc;
     });
@@ -80,7 +81,7 @@ class _PresentationPageState extends State<PresentationPage> {
               child: AspectRatio(
                 aspectRatio: 16 / 9,
                 child: PdfDocumentLoader.openAsset(
-                    'assets/presentations/example.pdf',
+                    widget.filePath,
                     onError: (err) => print(err),
                     pageNumber: currentPage,
                     pageBuilder: (context, textureBuilder, pageSize) => textureBuilder()
@@ -96,16 +97,12 @@ class _PresentationPageState extends State<PresentationPage> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             IconButton(
-              icon: Icon(Icons.arrow_back_ios),
+              icon: const Icon(Icons.arrow_back_ios),
               onPressed: goToPreviousPage,
             ),
             IconButton(
-              icon: Icon(Icons.arrow_forward_ios),
+              icon: const Icon(Icons.arrow_forward_ios),
               onPressed: goToNextPage,
-            ),
-            IconButton(
-              icon: Icon(Icons.rotate_90_degrees_ccw),
-              onPressed: toggleOrientation,
             ),
           ],
         ),
