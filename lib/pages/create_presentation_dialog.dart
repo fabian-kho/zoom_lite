@@ -56,7 +56,8 @@ class _CreatePresentationDialogState extends State<CreatePresentationDialog> {
         ),
         TextButton(
           onPressed: () async {
-            final FilePickerResult? result = await FilePicker.platform.pickFiles(
+            final FilePickerResult? result =
+                await FilePicker.platform.pickFiles(
               type: FileType.custom,
               allowedExtensions: ['pdf'],
             );
@@ -69,9 +70,14 @@ class _CreatePresentationDialogState extends State<CreatePresentationDialog> {
               final filePath = result.files.single.path;
               print(filePath);
 
-              final firebase_storage.FirebaseStorage storage = firebase_storage.FirebaseStorage.instance;
-              final firebase_storage.Reference storageRef = storage.ref().child('presentations').child(_textFieldController.text);
-              final firebase_storage.UploadTask uploadTask = storageRef.putFile(File(filePath!));
+              final firebase_storage.FirebaseStorage storage =
+                  firebase_storage.FirebaseStorage.instance;
+              final firebase_storage.Reference storageRef = storage
+                  .ref()
+                  .child('presentations')
+                  .child(_textFieldController.text);
+              final firebase_storage.UploadTask uploadTask =
+                  storageRef.putFile(File(filePath!));
 
               uploadTask.whenComplete(() async {
                 try {
@@ -90,14 +96,19 @@ class _CreatePresentationDialogState extends State<CreatePresentationDialog> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => PresentationPage(title: _textFieldController.text, filePath: 'assets/presentations/example.pdf',),
+                      builder: (context) => PresentationPage(
+                        title: _textFieldController.text,
+                        filePath: 'assets/presentations/example.pdf',
+                      ),
                     ),
                   );
                 }
               });
             }
           },
-          child: _isLoading ? const CircularProgressIndicator() : const Text('Upload'),
+          child: _isLoading
+              ? const CircularProgressIndicator()
+              : const Text('Upload'),
         ),
       ],
     );
