@@ -93,6 +93,7 @@ class _PresentationPageState extends State<PresentationPage> {
             onPressed: () async {
               final shouldEndPresentation = await showExitConfirmationDialog();
               if (shouldEndPresentation == true) {
+                if(!mounted) return;
                 Navigator.pop(context);
               }
             },
