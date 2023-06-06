@@ -1,17 +1,26 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:zoom_lite/pages/presentaion_page.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:zoom_lite/pages/presentation_page.dart';
 
-// dialog widget to create a new presentation
-// heading: Create a new presentation
-// body:
-// - TextField to enter presentation name
-// - hint that only pdf files are supported
-// actions: Cancel and Upload buttons
-// Upload button should open the file picker from the file_picker package
-
-class CreatePresentationDialog extends StatelessWidget {
+class CreatePresentationDialog extends StatefulWidget {
   const CreatePresentationDialog({Key? key}) : super(key: key);
+
+  @override
+  State createState() => _CreatePresentationDialogState();
+}
+
+class _CreatePresentationDialogState extends State<CreatePresentationDialog> {
+  final DatabaseReference _databaseRef = FirebaseDatabase.instance.ref();
+  final TextEditingController _textFieldController = TextEditingController();
+
+  @override
+  void dispose() {
+    _textFieldController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,14 +28,16 @@ class CreatePresentationDialog extends StatelessWidget {
       title: const Text('Create a new presentation'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
-        children: const [
+        children: [
+          //TODO: Add validation
           TextField(
-            decoration: InputDecoration(
+            controller: _textFieldController,
+            decoration: const InputDecoration(
               hintText: 'Enter presentation name',
             ),
           ),
-          SizedBox(height: 10),
-          Text(
+          const SizedBox(height: 10),
+          const Text(
             'Only PDF files are supported',
             style: TextStyle(
               fontSize: 12,
@@ -44,33 +55,66 @@ class CreatePresentationDialog extends StatelessWidget {
         ),
         TextButton(
           onPressed: () async {
-            final FilePickerResult? result =
-                await FilePicker.platform.pickFiles(
+            final FilePickerResult? result = await FilePicker.platform.pickFiles(
               type: FileType.custom,
               allowedExtensions: ['pdf'],
             );
 
             if (result != null) {
-              // Verarbeiten der ausgewählten Datei
               final filePath = result.files.single.path;
-              // Führen Sie Aktionen mit dem Dateipfad aus, z. B. das Importieren der Präsentationn
 
-              // Close the dialog
-              Navigator.of(context).pop();
+              final firebase_storage.FirebaseStorage storage = firebase_storage.FirebaseStorage.instance;
+              final firebase_storage.Reference storageRef = storage.ref().child('presentations').child(_textFieldController.text);
+              final firebase_storage.UploadTask uploadTask = storageRef.putFile(File(filePath!));
 
-              // Navigate to the presentation page
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      PresentationPage(title: 'Imported Presentation'),
-                ),
-              );
+              uploadTask.whenComplete(() async {
+                try {
+                  final String downloadUrl = await storageRef.getDownloadURL();
+                  _databaseRef.child('presentations').push().set({
+                    'name': _textFieldController.text,
+                    'file_path': downloadUrl,
+                  });
+
+                  if (!mounted) return;
+
+                  //TODO: Add a loading screen/dialog after the user picked a file
+
+
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PresentationPage(title: _textFieldController.text),
+                    ),
+                  );
+                } catch (e) {
+                  print('Error uploading file: $e');
+                  showErrorDialog();
+                }
+              });
             }
           },
           child: const Text('Upload'),
         ),
       ],
+    );
+  }
+
+  void showErrorDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Error'),
+        content: const Text('An error occurred. Please try again.'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      ),
     );
   }
 }

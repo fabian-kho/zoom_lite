@@ -1,10 +1,18 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:zoom_lite/pages/landing_page.dart';
 
-void main() => runApp(const MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  MyApp({Key? key}) : super(key: key);
+
+  final Future<FirebaseApp> _fbApp = Firebase.initializeApp();
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +24,23 @@ class MyApp extends StatelessWidget {
         colorSchemeSeed: const Color(0xFF0A122A),
       ),
       themeMode: ThemeMode.system, // or ThemeMode.dark, ThemeMode.light
-      home: const LandingPage(title: 'Hello! 👋'),
+      home: FutureBuilder(
+        future: _fbApp,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            if (kDebugMode) {
+              print('You have an error! ${snapshot.error.toString()}');
+            }
+            return const Text('Something went wrong!');
+          } else if (snapshot.hasData) {
+            return const LandingPage(title: 'Hello! 👋');
+          } else {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
+      )
     );
   }
 }
