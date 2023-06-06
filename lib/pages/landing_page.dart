@@ -2,8 +2,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:zoom_lite/components/list_item.dart';
 import 'package:zoom_lite/models/presentation.dart';
+import 'package:zoom_lite/pages/audience_page.dart';
 import 'package:zoom_lite/pages/create_presentation_dialog.dart';
-import 'package:zoom_lite/pages/presentation_page.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({Key? key, required this.title}) : super(key: key);
@@ -50,7 +50,7 @@ class _LandingPageState extends State<LandingPage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => PresentationPage(title: presentation.title, filePath: 'assets/presentations/example.pdf',),
+                builder: (context) => AudiencePage(title: presentation.title, filePath: 'assets/presentations/example.pdf',),
               ),
             );
           },

@@ -26,7 +26,8 @@ class _PresentationPageState extends State<PresentationPage> {
   }
 
   void loadDocument() async {
-    final doc = await PdfDocument.openAsset(widget.filePath);
+    print(widget.filePath);
+    final doc = await PdfDocument.openFile(widget.filePath);
     setState(() {
       document = doc;
     });
