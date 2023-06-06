@@ -136,9 +136,7 @@ class _PresentationPageState extends State<PresentationPage> {
                 onPressed: isLastPage ? null : goToNextPage,
               ),
               IconButton(
-                icon: Icon(isVerticalMode
-                    ? Icons.screen_lock_portrait
-                    : Icons.screen_lock_landscape),
+                icon: const Icon(Icons.screen_rotation),
                 onPressed: toggleOrientation,
               ),
             ],
