@@ -79,8 +79,7 @@ class _LandingPageState extends State<LandingPage> {
         title: Text(widget.title),
         titleTextStyle: const TextStyle(
           fontSize: 24,
-          fontWeight: FontWeight.w600,
-          color: Colors.black,
+          fontWeight: FontWeight.w400,
         ),
       ),
       body: Container(
@@ -95,7 +94,6 @@ class _LandingPageState extends State<LandingPage> {
               'Recent Presentations',
               style: TextStyle(
                 fontSize: 20,
-                fontWeight: FontWeight.w500,
               ),
             ),
             const SizedBox(height: 10),
@@ -108,6 +106,7 @@ class _LandingPageState extends State<LandingPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
         onPressed: () {
           showDialog(
             context: context,
@@ -123,14 +122,14 @@ class _LandingPageState extends State<LandingPage> {
 class SearchBox extends StatelessWidget {
   final Function(String) onSearchChanged;
 
-  const SearchBox({required this.onSearchChanged});
+  const SearchBox({super.key, required this.onSearchChanged});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       decoration: BoxDecoration(
-        color: Colors.grey[200],
+        color: Theme.of(context).colorScheme.secondaryContainer,
         borderRadius: BorderRadius.circular(10),
       ),
       child: TextField(
@@ -146,7 +145,6 @@ class SearchBox extends StatelessWidget {
           hintText: 'Search for presentations',
           hintStyle: TextStyle(
             fontSize: 16,
-            color: Colors.grey,
           ),
         ),
       ),

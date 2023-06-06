@@ -22,7 +22,7 @@ class ListItem extends StatelessWidget {
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(8)),
         ),
-        tileColor: Colors.grey[200],
+        tileColor: Theme.of(context).colorScheme.secondaryContainer,
         // leading thumbnail
         leading: SizedBox(
           width: 90,
