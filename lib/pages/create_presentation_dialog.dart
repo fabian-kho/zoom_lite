@@ -67,6 +67,7 @@ class _CreatePresentationDialogState extends State<CreatePresentationDialog> {
               });
 
               final filePath = result.files.single.path;
+              print(filePath);
 
               final firebase_storage.FirebaseStorage storage = firebase_storage.FirebaseStorage.instance;
               final firebase_storage.Reference storageRef = storage.ref().child('presentations').child(_textFieldController.text);
@@ -76,7 +77,7 @@ class _CreatePresentationDialogState extends State<CreatePresentationDialog> {
                 try {
                   final String downloadUrl = await storageRef.getDownloadURL();
                   _databaseRef.child('presentations').push().set({
-                    'name': _textFieldController.text,
+                    'title': _textFieldController.text,
                     'file_path': downloadUrl,
                   });
                 } catch (e) {
