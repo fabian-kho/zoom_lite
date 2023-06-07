@@ -93,6 +93,9 @@ class _CreatePresentationDialogState extends State<CreatePresentationDialog> {
                   setState(() {
                     _isLoading = false;
                   });
+                  // Close the upload dialog
+                  Navigator.pop(context);
+
                   Navigator.push(
                     context,
                     MaterialPageRoute(
