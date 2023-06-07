@@ -110,7 +110,7 @@ class _PresentationPageState extends State<PresentationPage> {
                   margin: const EdgeInsets.symmetric(horizontal: 10),
                   child: AspectRatio(
                     aspectRatio: isVerticalMode ? 16 / 9 : 9 / 16,
-                    child: PdfDocumentLoader.openAsset(
+                    child: PdfDocumentLoader.openFile(
                       widget.filePath,
                       onError: (err) => print(err),
                       pageNumber: currentPage,
