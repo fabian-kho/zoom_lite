@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:pdf_render/pdf_render.dart';
 import 'package:pdf_render/pdf_render_widgets.dart';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class AudiencePage extends StatefulWidget {
   final String title;
-  final String filePath;
+  final String firebaseStorageUrl;
 
-  const AudiencePage({Key? key, required this.title, required this.filePath}) : super(key: key);
+  const AudiencePage({Key? key, required this.title, required this.firebaseStorageUrl}) : super(key: key);
 
   @override
   State createState() => _AudiencePageState();
@@ -14,6 +17,7 @@ class AudiencePage extends StatefulWidget {
 
 class _AudiencePageState extends State<AudiencePage> {
   PdfDocument? document;
+  String? localFilePath;
 
   @override
   void initState() {
@@ -22,7 +26,12 @@ class _AudiencePageState extends State<AudiencePage> {
   }
 
   void loadDocument() async {
-    final doc = await PdfDocument.openAsset(widget.filePath);
+
+    // Download the file from Firebase Storage
+    File file = await downloadFile(widget.firebaseStorageUrl);
+    localFilePath = file.path;
+
+    final doc = await PdfDocument.openFile(file.path);
     setState(() {
       document = doc;
     });
@@ -54,6 +63,23 @@ class _AudiencePageState extends State<AudiencePage> {
     return result ?? false;
   }
 
+  Future<File> downloadFile(String firebaseStorageUrl) async {
+    // Get the reference to the file from the Firebase Storage URL
+    Reference ref = FirebaseStorage.instance.refFromURL(firebaseStorageUrl);
+
+    // Get the temporary directory of the device
+    Directory tempDir = await getTemporaryDirectory();
+    String tempPath = tempDir.path;
+
+    // Create a new file in the temporary directory
+    File file = File('$tempPath/my_file.pdf');
+
+    // Download the file from Firebase Storage
+    await ref.writeToFile(file);
+
+    return file;
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -72,14 +98,14 @@ class _AudiencePageState extends State<AudiencePage> {
           ),
           title: Text(widget.title),
         ),
-        body: document != null
+        body: document != null && localFilePath != null
             ? Center(
           child: Container(
             margin: const EdgeInsets.symmetric(horizontal: 10),
             child: AspectRatio(
               aspectRatio: 16 / 9,
-              child: PdfDocumentLoader.openAsset(
-                widget.filePath,
+              child: PdfDocumentLoader.openFile(
+                localFilePath!,
                 onError: (err) => print(err),
                 pageNumber: 1,
                 pageBuilder: (context, textureBuilder, pageSize) => textureBuilder(),

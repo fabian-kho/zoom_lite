@@ -50,7 +50,7 @@ class _LandingPageState extends State<LandingPage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AudiencePage(title: presentation.title, filePath: 'assets/presentations/example.pdf',),
+                builder: (context) => AudiencePage(title: presentation.title, firebaseStorageUrl: presentation.filePath,),
               ),
             );
           },
