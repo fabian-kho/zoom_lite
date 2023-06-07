@@ -28,7 +28,7 @@ class _AudiencePageState extends State<AudiencePage> {
   void loadDocument() async {
 
     // Download the file from Firebase Storage
-    File file = await downloadFile(widget.firebaseStorageUrl);
+    File file = await downloadFile(widget.firebaseStorageUrl, widget.title);
     localFilePath = file.path;
 
     final doc = await PdfDocument.openFile(file.path);
@@ -63,7 +63,7 @@ class _AudiencePageState extends State<AudiencePage> {
     return result ?? false;
   }
 
-  Future<File> downloadFile(String firebaseStorageUrl) async {
+  Future<File> downloadFile(String firebaseStorageUrl, String fileName) async {
     // Get the reference to the file from the Firebase Storage URL
     Reference ref = FirebaseStorage.instance.refFromURL(firebaseStorageUrl);
 
@@ -72,7 +72,7 @@ class _AudiencePageState extends State<AudiencePage> {
     String tempPath = tempDir.path;
 
     // Create a new file in the temporary directory
-    File file = File('$tempPath/my_file.pdf');
+    File file = File('$tempPath/$fileName.pdf');
 
     // Download the file from Firebase Storage
     await ref.writeToFile(file);
