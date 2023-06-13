@@ -26,18 +26,21 @@ class _AudiencePageState extends State<AudiencePage> {
   PdfDocument? document;
   String? localFilePath;
   int currentPage = 1;
-  DatabaseReference? _databaseRef;
+
+  final DatabaseReference _databaseRef = FirebaseDatabase.instance.ref().child('presentations');
+  DatabaseReference? _pageNumberRef;
 
   @override
   void initState() {
     super.initState();
     loadDocument();
-    _databaseRef = FirebaseDatabase.instance
+    _pageNumberRef = FirebaseDatabase.instance
         .ref()
         .child('presentations')
         .child(widget.presentationId)
         .child('page_number');
     listenToPageChanges();
+    listenToPresentationRemoval();
   }
 
   void loadDocument() async {
@@ -95,7 +98,7 @@ class _AudiencePageState extends State<AudiencePage> {
   }
 
   void listenToPageChanges() {
-    _databaseRef!.onValue.listen((event) {
+    _pageNumberRef!.onValue.listen((event) {
       if (event.snapshot.value == null) {
         return;
       }
@@ -104,6 +107,30 @@ class _AudiencePageState extends State<AudiencePage> {
       });
     });
   }
+
+  void listenToPresentationRemoval() {
+    _databaseRef.onChildRemoved.listen((event) {
+      if (event.snapshot.key == widget.presentationId) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Presentation Canceled'),
+            content: const Text('The presenter has canceled the presentation.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context); // Close the dialog
+                  Navigator.pop(context); // Close the page
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+      }
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
