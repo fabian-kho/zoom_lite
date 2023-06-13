@@ -1,3 +1,4 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:pdf_render/pdf_render.dart';
 import 'package:pdf_render/pdf_render_widgets.dart';
@@ -86,8 +87,19 @@ class _PresentationPageState extends State<PresentationPage> {
           ),
           TextButton(
             child: const Text('END PRESENTATION'),
-            onPressed: () {
+            onPressed: () async {
               Navigator.of(context).pop(true);
+
+              // Delete the presentation from the database
+              await _databaseRef
+                  .child('presentations')
+                  .child(widget.presentationId)
+                  .remove();
+
+              // Delete the file from Firebase Storage
+              final Reference fileRef =
+              FirebaseStorage.instance.ref().child(widget.filePath);
+              await fileRef.delete();
             },
           ),
         ],

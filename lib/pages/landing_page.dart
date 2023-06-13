@@ -28,38 +28,41 @@ class _LandingPageState extends State<LandingPage> {
   }
 
   void _fetchPresentations() {
-    _databaseRef.onValue.listen((event) {
-      if (event.snapshot.value == null) {
-        return;
-      }
-      final data = Map<String, dynamic>.from(event.snapshot.value as Map<dynamic, dynamic>);
-      allPresentations = data.entries.map((entry) {
-        final key = entry.key;
-        Map<String, dynamic> _presentation = Map<String, dynamic>.from(entry.value as Map<dynamic, dynamic>);
-        final presentation = Presentation.fromRTDB(_presentation);
-        return ListItem(
-          key: Key(key),
-          title: presentation.title,
-          thumbnail: Image.asset(
-            'assets/images/placeholder.png',
-            fit: BoxFit.cover,
-          ),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => AudiencePage(
-                  title: presentation.title,
-                  firebaseStorageUrl: presentation.filePath,
-                  presentationId: key,
-                  //presentationId: key,
-                ),
+    _databaseRef.onChildAdded.listen((event) {
+      final key = event.snapshot.key as String;
+      Map<String, dynamic> _presentation =
+      Map<String, dynamic>.from(event.snapshot.value as Map<dynamic, dynamic>);
+      final presentation = Presentation.fromRTDB(_presentation);
+      final listItem = ListItem(
+        key: Key(key),
+        title: presentation.title,
+        thumbnail: Image.asset(
+          'assets/images/placeholder.png',
+          fit: BoxFit.cover,
+        ),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AudiencePage(
+                title: presentation.title,
+                firebaseStorageUrl: presentation.filePath,
+                presentationId: key as String,
               ),
-            );
-          },
-        );
-      }).toList();
+            ),
+          );
+        },
+      );
       setState(() {
+        allPresentations.add(listItem);
+        filteredPresentations = allPresentations;
+      });
+    });
+
+    _databaseRef.onChildRemoved.listen((event) {
+      final key = event.snapshot.key as String;
+      setState(() {
+        allPresentations.removeWhere((listItem) => listItem.key == Key(key));
         filteredPresentations = allPresentations;
       });
     });
