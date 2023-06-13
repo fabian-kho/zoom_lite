@@ -33,10 +33,8 @@ class _LandingPageState extends State<LandingPage> {
         return;
       }
       final data = Map<String, dynamic>.from(event.snapshot.value as Map<dynamic, dynamic>);
-      print(data);
       allPresentations = data.entries.map((entry) {
         final key = entry.key;
-        print(entry.value);
         Map<String, dynamic> _presentation = Map<String, dynamic>.from(entry.value as Map<dynamic, dynamic>);
         final presentation = Presentation.fromRTDB(_presentation);
         return ListItem(
@@ -50,7 +48,12 @@ class _LandingPageState extends State<LandingPage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AudiencePage(title: presentation.title, firebaseStorageUrl: presentation.filePath,),
+                builder: (context) => AudiencePage(
+                  title: presentation.title,
+                  firebaseStorageUrl: presentation.filePath,
+                  presentationId: key,
+                  //presentationId: key,
+                ),
               ),
             );
           },
@@ -75,35 +78,46 @@ class _LandingPageState extends State<LandingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-        titleTextStyle: const TextStyle(
-          fontSize: 24,
-          fontWeight: FontWeight.w400,
-        ),
-      ),
-      body: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-        child: Column(
-          children: [
-            SearchBox(
-              onSearchChanged: _filterPresentations,
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              'Recent Presentations',
-              style: TextStyle(
-                fontSize: 20,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 50), // Added spacing above the title
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: Text(
+              widget.title,
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w400,
               ),
             ),
-            const SizedBox(height: 10),
-            Expanded(
-              child: ListView(
-                children: filteredPresentations,
-              ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(15),
+            child: SearchBox(onSearchChanged: _filterPresentations),
+          ),
+          const SizedBox(height: 20), // Added spacing below the title
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                Text(
+                  'Recent Presentations',
+                  style: TextStyle(fontSize: 20),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: filteredPresentations.length,
+              itemBuilder: (context, index) {
+                return filteredPresentations[index];
+              },
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
@@ -122,7 +136,7 @@ class _LandingPageState extends State<LandingPage> {
 class SearchBox extends StatelessWidget {
   final Function(String) onSearchChanged;
 
-  const SearchBox({super.key, required this.onSearchChanged});
+  const SearchBox({Key? key, required this.onSearchChanged}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

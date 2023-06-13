@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:pdf_render/pdf_render.dart';
 import 'package:pdf_render/pdf_render_widgets.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class PresentationPage extends StatefulWidget {
+  final String presentationId;
   final String title;
   final String filePath;
 
   const PresentationPage(
-      {Key? key, required this.title, required this.filePath})
+      {Key? key, required this.title, required this.filePath, required this.presentationId})
       : super(key: key);
 
   @override
@@ -15,6 +17,7 @@ class PresentationPage extends StatefulWidget {
 }
 
 class _PresentationPageState extends State<PresentationPage> {
+  final DatabaseReference _databaseRef = FirebaseDatabase.instance.ref();
   PdfDocument? document;
   final controller = PdfViewerController();
   int currentPage = 1;
@@ -35,21 +38,31 @@ class _PresentationPageState extends State<PresentationPage> {
     });
   }
 
-  void goToNextPage() {
+  void goToNextPage() async {
     if (currentPage < document!.pageCount - 1) {
       setState(() {
         currentPage++;
       });
+
+      // Update the page number in the database for the specific presentation item
+      final DatabaseReference pageRef = _databaseRef.child('presentations').child(widget.presentationId);
+      await pageRef.update({'page_number': currentPage.toString()});
     }
   }
 
-  void goToPreviousPage() {
+  void goToPreviousPage() async {
     if (currentPage > 1) {
       setState(() {
         currentPage--;
       });
+
+      // Update the page number in the database for the specific presentation item
+      final DatabaseReference pageRef = _databaseRef.child('presentations').child(widget.presentationId);
+      await pageRef.update({'page_number': currentPage.toString()});
     }
   }
+
+
 
   void toggleOrientation() {
     setState(() {

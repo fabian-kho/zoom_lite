@@ -16,6 +16,7 @@ class _CreatePresentationDialogState extends State<CreatePresentationDialog> {
   final DatabaseReference _databaseRef = FirebaseDatabase.instance.ref();
   final TextEditingController _textFieldController = TextEditingController();
   bool _isLoading = false;
+  late String presentationId;
 
   @override
   void dispose() {
@@ -82,9 +83,14 @@ class _CreatePresentationDialogState extends State<CreatePresentationDialog> {
               uploadTask.whenComplete(() async {
                 try {
                   final String downloadUrl = await storageRef.getDownloadURL();
-                  _databaseRef.child('presentations').push().set({
+                  final DatabaseReference presentationRef = _databaseRef.child('presentations').push();
+                  presentationId = presentationRef.key as String;
+
+                  presentationRef.set({
                     'title': _textFieldController.text,
                     'file_path': downloadUrl,
+                    'page_number': '1',
+                    'time': DateTime.now().millisecondsSinceEpoch,
                   });
                 } catch (e) {
                   print('Error uploading file: $e');
@@ -100,6 +106,7 @@ class _CreatePresentationDialogState extends State<CreatePresentationDialog> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => PresentationPage(
+                        presentationId: presentationId,
                         title: _textFieldController.text,
                         filePath: filePath,
                       ),

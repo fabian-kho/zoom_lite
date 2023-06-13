@@ -4,12 +4,19 @@ import 'package:pdf_render/pdf_render_widgets.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class AudiencePage extends StatefulWidget {
+  final String presentationId;
   final String title;
   final String firebaseStorageUrl;
 
-  const AudiencePage({Key? key, required this.title, required this.firebaseStorageUrl}) : super(key: key);
+  const AudiencePage({
+    Key? key,
+    required this.presentationId,
+    required this.title,
+    required this.firebaseStorageUrl,
+  }) : super(key: key);
 
   @override
   State createState() => _AudiencePageState();
@@ -18,15 +25,22 @@ class AudiencePage extends StatefulWidget {
 class _AudiencePageState extends State<AudiencePage> {
   PdfDocument? document;
   String? localFilePath;
+  int currentPage = 1;
+  DatabaseReference? _databaseRef;
 
   @override
   void initState() {
     super.initState();
     loadDocument();
+    _databaseRef = FirebaseDatabase.instance
+        .ref()
+        .child('presentations')
+        .child(widget.presentationId)
+        .child('page_number');
+    listenToPageChanges();
   }
 
   void loadDocument() async {
-
     // Download the file from Firebase Storage
     File file = await downloadFile(widget.firebaseStorageUrl, widget.title);
     localFilePath = file.path;
@@ -80,6 +94,17 @@ class _AudiencePageState extends State<AudiencePage> {
     return file;
   }
 
+  void listenToPageChanges() {
+    _databaseRef!.onValue.listen((event) {
+      if (event.snapshot.value == null) {
+        return;
+      }
+      setState(() {
+        currentPage = int.parse(event.snapshot.value.toString());
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -107,8 +132,9 @@ class _AudiencePageState extends State<AudiencePage> {
               child: PdfDocumentLoader.openFile(
                 localFilePath!,
                 onError: (err) => print(err),
-                pageNumber: 1,
-                pageBuilder: (context, textureBuilder, pageSize) => textureBuilder(),
+                pageNumber: currentPage,
+                pageBuilder: (context, textureBuilder, pageSize) =>
+                    textureBuilder(),
               ),
             ),
           ),
