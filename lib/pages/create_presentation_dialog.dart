@@ -16,7 +16,8 @@ class _CreatePresentationDialogState extends State<CreatePresentationDialog> {
   final DatabaseReference _databaseRef = FirebaseDatabase.instance.ref();
   final TextEditingController _textFieldController = TextEditingController();
   bool _isLoading = false;
-  late String presentationId;
+ // Map presentation which will be used to store the presentation data
+  Map<String, dynamic> presentation = {};
 
   @override
   void dispose() {
@@ -84,7 +85,12 @@ class _CreatePresentationDialogState extends State<CreatePresentationDialog> {
                 try {
                   final String downloadUrl = await storageRef.getDownloadURL();
                   final DatabaseReference presentationRef = _databaseRef.child('presentations').push();
-                  presentationId = presentationRef.key as String;
+
+                  // store the presentation data in the presentation object
+                  presentation = {
+                    'id': presentationRef.key as String,
+                    'file_path': downloadUrl,
+                  };
 
                   presentationRef.set({
                     'title': _textFieldController.text,
@@ -106,7 +112,7 @@ class _CreatePresentationDialogState extends State<CreatePresentationDialog> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => PresentationPage(
-                        presentationId: presentationId,
+                        presentation: presentation,
                         title: _textFieldController.text,
                         filePath: filePath,
                       ),

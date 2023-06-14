@@ -84,7 +84,7 @@ class _LandingPageState extends State<LandingPage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 50), // Added spacing above the title
+          const SizedBox(height: 60),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15),
             child: Text(
@@ -99,24 +99,51 @@ class _LandingPageState extends State<LandingPage> {
             padding: const EdgeInsets.all(15),
             child: SearchBox(onSearchChanged: _filterPresentations),
           ),
-          const SizedBox(height: 20), // Added spacing below the title
+          const SizedBox(height: 20),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text(
+            child: const Text(
                   'Recent Presentations',
                   style: TextStyle(fontSize: 20),
                 ),
-              ],
-            ),
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: filteredPresentations.length,
+              itemCount: filteredPresentations.isNotEmpty ? filteredPresentations.length : 1,
               itemBuilder: (context, index) {
-                return filteredPresentations[index];
+                if (filteredPresentations.isEmpty) {
+                  // Show skeleton item
+                  return Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 15),
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.all(14),
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                      ),
+                      tileColor: Theme.of(context).colorScheme.secondaryContainer,
+                      title: SizedBox(
+                        height: 20,
+                        child: Container(
+                          color: Colors.grey.withOpacity(0.3),
+                        ),
+                      ),
+                      subtitle: SizedBox(
+                        height: 12,
+                        child: Container(
+                          color: Colors.grey.withOpacity(0.2),
+                        ),
+                      ),
+                      leading: Container(
+                        width: 40,
+                        height: 40,
+                        color: Colors.grey.withOpacity(0.2),
+                      ),
+                    ),
+                  );
+                } else {
+                  // Show actual presentation item
+                  return filteredPresentations[index];
+                }
               },
             ),
           ),
@@ -134,6 +161,7 @@ class _LandingPageState extends State<LandingPage> {
       ),
     );
   }
+
 }
 
 class SearchBox extends StatelessWidget {

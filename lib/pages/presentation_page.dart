@@ -5,12 +5,12 @@ import 'package:pdf_render/pdf_render_widgets.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 class PresentationPage extends StatefulWidget {
-  final String presentationId;
+  final Map<String, dynamic> presentation;
   final String title;
   final String filePath;
 
   const PresentationPage(
-      {Key? key, required this.title, required this.filePath, required this.presentationId})
+      {Key? key, required this.title, required this.filePath, required this.presentation})
       : super(key: key);
 
   @override
@@ -46,7 +46,7 @@ class _PresentationPageState extends State<PresentationPage> {
       });
 
       // Update the page number in the database for the specific presentation item
-      final DatabaseReference pageRef = _databaseRef.child('presentations').child(widget.presentationId);
+      final DatabaseReference pageRef = _databaseRef.child('presentations').child(widget.presentation['id']);
       await pageRef.update({'page_number': currentPage.toString()});
     }
   }
@@ -58,7 +58,7 @@ class _PresentationPageState extends State<PresentationPage> {
       });
 
       // Update the page number in the database for the specific presentation item
-      final DatabaseReference pageRef = _databaseRef.child('presentations').child(widget.presentationId);
+      final DatabaseReference pageRef = _databaseRef.child('presentations').child(widget.presentation['id']);
       await pageRef.update({'page_number': currentPage.toString()});
     }
   }
@@ -93,12 +93,15 @@ class _PresentationPageState extends State<PresentationPage> {
               // Delete the presentation from the database
               await _databaseRef
                   .child('presentations')
-                  .child(widget.presentationId)
+                  .child(widget.presentation['id'])
                   .remove();
+
+
+              print('###########################${widget.presentation['file_path']}');
 
               // Delete the file from Firebase Storage
               final Reference fileRef =
-              FirebaseStorage.instance.ref().child(widget.filePath);
+              FirebaseStorage.instance.refFromURL(widget.presentation['file_path']);
               await fileRef.delete();
             },
           ),
