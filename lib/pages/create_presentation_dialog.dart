@@ -16,13 +16,103 @@ class _CreatePresentationDialogState extends State<CreatePresentationDialog> {
   final DatabaseReference _databaseRef = FirebaseDatabase.instance.ref();
   final TextEditingController _textFieldController = TextEditingController();
   bool _isLoading = false;
- // Map presentation which will be used to store the presentation data
+  String? _presentationNameError;
   Map<String, dynamic> presentation = {};
 
   @override
   void dispose() {
     _textFieldController.dispose();
     super.dispose();
+  }
+
+  String? validatePresentationName(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Presentation name cannot be empty';
+    }
+    if (value.contains('#')) {
+      return 'Presentation name should not contain "#" symbol';
+    }
+    return null;
+  }
+
+  Future<void> _validateAndUpload() async {
+    final String presentationName = _textFieldController.text.trim();
+    final String? validationError = validatePresentationName(presentationName);
+
+    setState(() {
+      _presentationNameError = validationError;
+    });
+
+    if (validationError != null) {
+      return;
+    }
+
+    final FilePickerResult? result =
+    await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf'],
+    );
+
+    if (result != null) {
+      setState(() {
+        _isLoading = true;
+      });
+
+    upload(result);
+    }
+  }
+
+  void upload(FilePickerResult result) {
+    final filePath = result.files.single.path;
+
+    final firebase_storage.FirebaseStorage storage =
+        firebase_storage.FirebaseStorage.instance;
+    final firebase_storage.Reference storageRef = storage
+        .ref()
+        .child('presentations')
+        .child(_textFieldController.text);
+    final firebase_storage.UploadTask uploadTask =
+    storageRef.putFile(File(filePath!));
+
+    uploadTask.whenComplete(() async {
+      try {
+        final String downloadUrl = await storageRef.getDownloadURL();
+        final DatabaseReference presentationRef = _databaseRef.child('presentations').push();
+
+        // store the presentation data in the presentation object
+        presentation = {
+          'id': presentationRef.key as String,
+          'file_path': downloadUrl,
+        };
+
+        presentationRef.set({
+          'title': _textFieldController.text,
+          'file_path': downloadUrl,
+          'page_number': '1',
+          'time': DateTime.now().millisecondsSinceEpoch,
+        });
+      } catch (e) {
+        print('Error uploading file: $e');
+        // toasting the error
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
+        // Close the upload dialog
+        Navigator.pop(context);
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PresentationPage(
+              presentation: presentation,
+              title: _textFieldController.text,
+              filePath: filePath,
+            ),
+          ),
+        );
+      }
+    });
   }
 
   @override
@@ -32,13 +122,23 @@ class _CreatePresentationDialogState extends State<CreatePresentationDialog> {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          //TODO: Add validation
-          TextField(
+          TextFormField(
             controller: _textFieldController,
             decoration: const InputDecoration(
               hintText: 'Enter presentation name',
             ),
+            validator: validatePresentationName,
           ),
+          if (_presentationNameError != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Text(
+                _presentationNameError!,
+                style: const TextStyle(
+                  color: Colors.red,
+                ),
+              ),
+            ),
           const SizedBox(height: 10),
           const Text(
             'Only PDF files are supported',
@@ -57,94 +157,10 @@ class _CreatePresentationDialogState extends State<CreatePresentationDialog> {
           child: const Text('Cancel'),
         ),
         TextButton(
-          onPressed: () async {
-            final FilePickerResult? result =
-                await FilePicker.platform.pickFiles(
-              type: FileType.custom,
-              allowedExtensions: ['pdf'],
-            );
-
-            if (result != null) {
-              setState(() {
-                _isLoading = true;
-              });
-
-              final filePath = result.files.single.path;
-              print(filePath);
-
-              final firebase_storage.FirebaseStorage storage =
-                  firebase_storage.FirebaseStorage.instance;
-              final firebase_storage.Reference storageRef = storage
-                  .ref()
-                  .child('presentations')
-                  .child(_textFieldController.text);
-              final firebase_storage.UploadTask uploadTask =
-                  storageRef.putFile(File(filePath!));
-
-              uploadTask.whenComplete(() async {
-                try {
-                  final String downloadUrl = await storageRef.getDownloadURL();
-                  final DatabaseReference presentationRef = _databaseRef.child('presentations').push();
-
-                  // store the presentation data in the presentation object
-                  presentation = {
-                    'id': presentationRef.key as String,
-                    'file_path': downloadUrl,
-                  };
-
-                  presentationRef.set({
-                    'title': _textFieldController.text,
-                    'file_path': downloadUrl,
-                    'page_number': '1',
-                    'time': DateTime.now().millisecondsSinceEpoch,
-                  });
-                } catch (e) {
-                  print('Error uploading file: $e');
-                  showErrorDialog();
-                } finally {
-                  setState(() {
-                    _isLoading = false;
-                  });
-                  // Close the upload dialog
-                  Navigator.pop(context);
-
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PresentationPage(
-                        presentation: presentation,
-                        title: _textFieldController.text,
-                        filePath: filePath,
-                      ),
-                    ),
-                  );
-                }
-              });
-            }
-          },
-          child: _isLoading
-              ? const CircularProgressIndicator()
-              : const Text('Upload'),
+          onPressed: _validateAndUpload,
+          child: _isLoading ? const CircularProgressIndicator() : const Text('Upload'),
         ),
       ],
-    );
-  }
-
-  void showErrorDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Error'),
-        content: const Text('An error occurred. Please try again.'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: const Text('OK'),
-          ),
-        ],
-      ),
     );
   }
 }

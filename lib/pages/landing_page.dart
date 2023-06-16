@@ -47,7 +47,7 @@ class _LandingPageState extends State<LandingPage> {
               builder: (context) => AudiencePage(
                 title: presentation.title,
                 firebaseStorageUrl: presentation.filePath,
-                presentationId: key as String,
+                presentationId: key,
               ),
             ),
           );
