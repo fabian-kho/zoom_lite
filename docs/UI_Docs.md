@@ -76,8 +76,7 @@ There are three main pages:
 - Tapping Upload Button: Initiates the process of uploading a PDF file for the presentation.
   - File Picker: Allows the user to select a PDF file from their device.
   - CircularProgressIndicator: Indicates the loading process during the file upload.
-  - AlertDialog (Error): Displays an error dialog if an error occurs during the file upload.
-
+  - SnackBar: Displays a error message if the file upload fails.
 
 ### Wireframes
 In Figma we have created wireframes for the application. The wireframes are available [here](https://www.figma.com/file/nhKYOe3ctBqtwVwMKXlw5w/Zoom-lite?type=design&node-id=0%3A1&t=7ucbBcvpRjc7epkW-1).
