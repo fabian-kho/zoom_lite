@@ -93,7 +93,12 @@ class _CreatePresentationDialogState extends State<CreatePresentationDialog> {
         });
       } catch (e) {
         print('Error uploading file: $e');
-        // toasting the error
+
+        const snackBar = SnackBar(
+          content: Text('An error occurred. Please try again.'),
+          backgroundColor: Colors.red,
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
       } finally {
         setState(() {
           _isLoading = false;
