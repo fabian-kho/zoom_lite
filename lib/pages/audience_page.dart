@@ -26,6 +26,8 @@ class _AudiencePageState extends State<AudiencePage> {
   PdfDocument? document;
   String? localFilePath;
   int currentPage = 1;
+  bool isVerticalMode = true;
+
 
   final DatabaseReference _databaseRef = FirebaseDatabase.instance.ref().child('presentations');
   DatabaseReference? _pageNumberRef;
@@ -41,6 +43,12 @@ class _AudiencePageState extends State<AudiencePage> {
         .child('page_number');
     listenToPageChanges();
     listenToPresentationRemoval();
+  }
+
+  void toggleOrientation() {
+    setState(() {
+      isVerticalMode = !isVerticalMode;
+    });
   }
 
   void loadDocument() async {
@@ -156,7 +164,7 @@ class _AudiencePageState extends State<AudiencePage> {
           child: Container(
             margin: const EdgeInsets.symmetric(horizontal: 10),
             child: AspectRatio(
-              aspectRatio: 16 / 9,
+              aspectRatio: isVerticalMode ? 16 / 9 : 9 / 16,
               child: PdfDocumentLoader.openFile(
                 localFilePath!,
                 onError: (err) => print(err),
@@ -169,6 +177,13 @@ class _AudiencePageState extends State<AudiencePage> {
         )
             : const Center(
           child: CircularProgressIndicator(),
+        ),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+          onPressed: () {
+            toggleOrientation();
+          },
+          child: const Icon(Icons.screen_rotation),
         ),
       ),
     );
