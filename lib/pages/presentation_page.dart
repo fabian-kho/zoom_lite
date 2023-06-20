@@ -1,6 +1,5 @@
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:pdf_render/pdf_render.dart';
 import 'package:pdf_render/pdf_render_widgets.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -72,12 +71,6 @@ class _PresentationPageState extends State<PresentationPage> {
   void toggleOrientation() {
     setState(() {
       isVerticalMode = !isVerticalMode;
-      if (!isVerticalMode) {
-        SystemChrome.setPreferredOrientations(
-            [DeviceOrientation.landscapeLeft]);
-      } else {
-        SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-      }
     });
   }
 
@@ -146,8 +139,8 @@ class _PresentationPageState extends State<PresentationPage> {
             ? Center(
                 child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 10),
-                  child: AspectRatio(
-                    aspectRatio: isVerticalMode ? 16 / 9 : 16 / 9,
+                  child: RotatedBox(
+                    quarterTurns: isVerticalMode ? 0 : 1,
                     child: PdfDocumentLoader.openFile(
                       widget.filePath,
                       onError: (err) => print(err),
