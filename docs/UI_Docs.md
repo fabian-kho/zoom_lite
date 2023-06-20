@@ -71,6 +71,8 @@ There are three main pages:
 
 ### CreatePresentationDialog
 
+<img src="/docs/screenshots/create_dialog.png" width="250px">
+
 #### UI Components:
 - AlertDialog: Displays a dialog to create a new presentation.
   - Text Field: Allows the user to enter the presentation name.
