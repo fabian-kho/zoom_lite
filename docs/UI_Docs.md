@@ -23,7 +23,7 @@ There are three main pages:
 
 ## LandingPage
 
-![LandingPage](/docs/screenshots/landingpage.png)
+<img src="/docs/screenshots/landingpage.png" width="250px">
 
 ### UI Components:
 - AppBar: Displays a Greeting.
@@ -38,7 +38,7 @@ There are three main pages:
 
 ### AudiencePage
 
-![AudiencePage](/docs/screenshots/audiencepage.png)
+<img src="/docs/screenshots/audiencepage.png" width="250px">
 
 #### UI Components:
 - AppBar: Displays the title of the presentation.
@@ -53,7 +53,7 @@ There are three main pages:
 
 ### PresentationPage
 
-![PresentationPage](/docs/screenshots/presentationpage.png)
+<img src="/docs/screenshots/presentationpage.png" width="250px">
 
 #### UI Components:
 - AppBar: Displays the title of the presentation.
