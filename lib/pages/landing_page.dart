@@ -1,3 +1,9 @@
+import 'dart:io';
+import 'dart:typed_data';
+import 'dart:ui';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:pdf_render/pdf_render.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:zoom_lite/components/list_item.dart';
@@ -27,19 +33,48 @@ class _LandingPageState extends State<LandingPage> {
     _fetchPresentations();
   }
 
+  Future<File> downloadPdfFile(String fileUrl) async {
+    final Reference ref = FirebaseStorage.instance.refFromURL(fileUrl);
+
+    final Directory tempDir = await getTemporaryDirectory();
+    final String tempPath = tempDir.path;
+    final File file = File('$tempPath/${ref.name}');
+
+    await ref.writeToFile(file);
+
+    return file;
+  }
+
+  Future<Image> extractFirstPageImage(File pdfFile) async {
+    final PdfDocument doc = await PdfDocument.openFile(pdfFile.path);
+    // Extract the first page as an image
+    final firstPage = await doc.getPage(1);
+    final pageImage = await firstPage.render();
+    final image = await pageImage.createImageDetached();
+    final pngData = await image.toByteData(format: ImageByteFormat.png);
+
+    return Image.memory(Uint8List.view(pngData!.buffer));
+  }
+
+
+
   void _fetchPresentations() {
-    _databaseRef.onChildAdded.listen((event) {
+    _databaseRef.onChildAdded.listen((event) async {
       final key = event.snapshot.key as String;
       Map<String, dynamic> _presentation =
       Map<String, dynamic>.from(event.snapshot.value as Map<dynamic, dynamic>);
       final presentation = Presentation.fromRTDB(_presentation);
+
+      // Download the PDF file
+      final pdfFile = await downloadPdfFile(presentation.filePath);
+
+      // Extract the first page as an image
+      final thumbnail = await extractFirstPageImage(pdfFile);
+
       final listItem = ListItem(
         key: Key(key),
         title: presentation.title,
-        thumbnail: Image.asset(
-          'assets/images/placeholder.png',
-          fit: BoxFit.cover,
-        ),
+        thumbnail: thumbnail,
         onTap: () {
           Navigator.push(
             context,
