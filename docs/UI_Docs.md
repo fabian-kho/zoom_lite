@@ -23,6 +23,8 @@ There are three main pages:
 
 ## LandingPage
 
+![LandingPage](docs/screenshots/landingpage.png)
+
 ### UI Components:
 - AppBar: Displays a Greeting.
 - SearchBar: Allows the user to search for a presentation.
@@ -36,6 +38,8 @@ There are three main pages:
 
 ### AudiencePage
 
+![AudiencePage](docs/screenshots/audiencepage.png)
+
 #### UI Components:
 - AppBar: Displays the title of the presentation.
 - PDF Viewer: Renders and displays the presentation document.
@@ -48,6 +52,8 @@ There are three main pages:
 
 
 ### PresentationPage
+
+![PresentationPage](docs/screenshots/presentationpage.png)
 
 #### UI Components:
 - AppBar: Displays the title of the presentation.
