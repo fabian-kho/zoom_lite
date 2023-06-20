@@ -10,7 +10,10 @@ class PresentationPage extends StatefulWidget {
   final String filePath;
 
   const PresentationPage(
-      {Key? key, required this.title, required this.filePath, required this.presentation})
+      {Key? key,
+      required this.title,
+      required this.filePath,
+      required this.presentation})
       : super(key: key);
 
   @override
@@ -46,7 +49,8 @@ class _PresentationPageState extends State<PresentationPage> {
       });
 
       // Update the page number in the database for the specific presentation item
-      final DatabaseReference pageRef = _databaseRef.child('presentations').child(widget.presentation['id']);
+      final DatabaseReference pageRef =
+          _databaseRef.child('presentations').child(widget.presentation['id']);
       await pageRef.update({'page_number': currentPage.toString()});
     }
   }
@@ -58,12 +62,11 @@ class _PresentationPageState extends State<PresentationPage> {
       });
 
       // Update the page number in the database for the specific presentation item
-      final DatabaseReference pageRef = _databaseRef.child('presentations').child(widget.presentation['id']);
+      final DatabaseReference pageRef =
+          _databaseRef.child('presentations').child(widget.presentation['id']);
       await pageRef.update({'page_number': currentPage.toString()});
     }
   }
-
-
 
   void toggleOrientation() {
     setState(() {
@@ -96,12 +99,12 @@ class _PresentationPageState extends State<PresentationPage> {
                   .child(widget.presentation['id'])
                   .remove();
 
-
-              print('###########################${widget.presentation['file_path']}');
+              print(
+                  '###########################${widget.presentation['file_path']}');
 
               // Delete the file from Firebase Storage
-              final Reference fileRef =
-              FirebaseStorage.instance.refFromURL(widget.presentation['file_path']);
+              final Reference fileRef = FirebaseStorage.instance
+                  .refFromURL(widget.presentation['file_path']);
               await fileRef.delete();
             },
           ),
