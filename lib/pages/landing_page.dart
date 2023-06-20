@@ -150,7 +150,7 @@ class _LandingPageState extends State<LandingPage> {
                 if (filteredPresentations.isEmpty) {
                   // Show skeleton item
                   return Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 20),
+                    margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                     child: ListTile(
                       contentPadding: const EdgeInsets.all(14),
                       shape: const RoundedRectangleBorder(
