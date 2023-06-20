@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:pdf_render/pdf_render.dart';
 import 'package:pdf_render/pdf_render_widgets.dart';
 import 'dart:io';
@@ -28,8 +29,8 @@ class _AudiencePageState extends State<AudiencePage> {
   int currentPage = 1;
   bool isVerticalMode = true;
 
-
-  final DatabaseReference _databaseRef = FirebaseDatabase.instance.ref().child('presentations');
+  final DatabaseReference _databaseRef =
+      FirebaseDatabase.instance.ref().child('presentations');
   DatabaseReference? _pageNumberRef;
 
   @override
@@ -48,6 +49,12 @@ class _AudiencePageState extends State<AudiencePage> {
   void toggleOrientation() {
     setState(() {
       isVerticalMode = !isVerticalMode;
+      if (!isVerticalMode) {
+        SystemChrome.setPreferredOrientations(
+            [DeviceOrientation.landscapeLeft]);
+      } else {
+        SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+      }
     });
   }
 
@@ -55,7 +62,6 @@ class _AudiencePageState extends State<AudiencePage> {
     // Download the file from Firebase Storage
     File file = await downloadFile(widget.firebaseStorageUrl, widget.title);
     localFilePath = file.path;
-
 
     final doc = await PdfDocument.openFile(file.path);
     setState(() {
@@ -140,7 +146,6 @@ class _AudiencePageState extends State<AudiencePage> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -150,7 +155,8 @@ class _AudiencePageState extends State<AudiencePage> {
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () async {
-              final shouldLeavePresentation = await showExitConfirmationDialog();
+              final shouldLeavePresentation =
+                  await showExitConfirmationDialog();
               if (shouldLeavePresentation == true) {
                 if (!mounted) return;
                 Navigator.pop(context);
@@ -161,23 +167,23 @@ class _AudiencePageState extends State<AudiencePage> {
         ),
         body: document != null && localFilePath != null
             ? Center(
-          child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 10),
-            child: AspectRatio(
-              aspectRatio: isVerticalMode ? 16 / 9 : 9 / 16,
-              child: PdfDocumentLoader.openFile(
-                localFilePath!,
-                onError: (err) => print(err),
-                pageNumber: currentPage,
-                pageBuilder: (context, textureBuilder, pageSize) =>
-                    textureBuilder(),
-              ),
-            ),
-          ),
-        )
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 10),
+                  child: AspectRatio(
+                    aspectRatio: isVerticalMode ? 16 / 9 : 9 / 16,
+                    child: PdfDocumentLoader.openFile(
+                      localFilePath!,
+                      onError: (err) => print(err),
+                      pageNumber: currentPage,
+                      pageBuilder: (context, textureBuilder, pageSize) =>
+                          textureBuilder(),
+                    ),
+                  ),
+                ),
+              )
             : const Center(
-          child: CircularProgressIndicator(),
-        ),
+                child: CircularProgressIndicator(),
+              ),
         floatingActionButton: FloatingActionButton(
           backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
           onPressed: () {

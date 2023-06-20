@@ -1,5 +1,6 @@
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:pdf_render/pdf_render.dart';
 import 'package:pdf_render/pdf_render_widgets.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -10,7 +11,10 @@ class PresentationPage extends StatefulWidget {
   final String filePath;
 
   const PresentationPage(
-      {Key? key, required this.title, required this.filePath, required this.presentation})
+      {Key? key,
+      required this.title,
+      required this.filePath,
+      required this.presentation})
       : super(key: key);
 
   @override
@@ -46,7 +50,8 @@ class _PresentationPageState extends State<PresentationPage> {
       });
 
       // Update the page number in the database for the specific presentation item
-      final DatabaseReference pageRef = _databaseRef.child('presentations').child(widget.presentation['id']);
+      final DatabaseReference pageRef =
+          _databaseRef.child('presentations').child(widget.presentation['id']);
       await pageRef.update({'page_number': currentPage.toString()});
     }
   }
@@ -58,16 +63,21 @@ class _PresentationPageState extends State<PresentationPage> {
       });
 
       // Update the page number in the database for the specific presentation item
-      final DatabaseReference pageRef = _databaseRef.child('presentations').child(widget.presentation['id']);
+      final DatabaseReference pageRef =
+          _databaseRef.child('presentations').child(widget.presentation['id']);
       await pageRef.update({'page_number': currentPage.toString()});
     }
   }
 
-
-
   void toggleOrientation() {
     setState(() {
       isVerticalMode = !isVerticalMode;
+      if (!isVerticalMode) {
+        SystemChrome.setPreferredOrientations(
+            [DeviceOrientation.landscapeLeft]);
+      } else {
+        SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+      }
     });
   }
 
@@ -96,12 +106,12 @@ class _PresentationPageState extends State<PresentationPage> {
                   .child(widget.presentation['id'])
                   .remove();
 
-
-              print('###########################${widget.presentation['file_path']}');
+              print(
+                  '###########################${widget.presentation['file_path']}');
 
               // Delete the file from Firebase Storage
-              final Reference fileRef =
-              FirebaseStorage.instance.refFromURL(widget.presentation['file_path']);
+              final Reference fileRef = FirebaseStorage.instance
+                  .refFromURL(widget.presentation['file_path']);
               await fileRef.delete();
             },
           ),
@@ -137,7 +147,7 @@ class _PresentationPageState extends State<PresentationPage> {
                 child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 10),
                   child: AspectRatio(
-                    aspectRatio: isVerticalMode ? 16 / 9 : 9 / 16,
+                    aspectRatio: isVerticalMode ? 16 / 9 : 16 / 9,
                     child: PdfDocumentLoader.openFile(
                       widget.filePath,
                       onError: (err) => print(err),

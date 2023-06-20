@@ -9,14 +9,13 @@ Future<void> main() async {
   await Firebase.initializeApp();
   runApp(const App());
 }
+
 class App extends StatefulWidget {
   const App({super.key});
 
   @override
   State<App> createState() => _AppState();
 }
-
-
 
 class _AppState extends State<App> {
   final Future<FirebaseApp> _fbApp = Firebase.initializeApp();
@@ -42,13 +41,14 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Zoom lite',
+        debugShowCheckedModeBanner: false,
+        title: 'Zoom lite',
         themeMode: themeMode,
         theme: ThemeData(
-          colorSchemeSeed: colorSelectionMethod == ColorSelectionMethod.colorSeed
-              ? colorSelected.color
-              : null,
+          colorSchemeSeed:
+              colorSelectionMethod == ColorSelectionMethod.colorSeed
+                  ? colorSelected.color
+                  : null,
           colorScheme: colorSelectionMethod == ColorSelectionMethod.image
               ? imageColorScheme
               : null,
@@ -56,29 +56,29 @@ class _AppState extends State<App> {
           brightness: Brightness.light,
         ),
         darkTheme: ThemeData(
-          colorSchemeSeed: colorSelectionMethod == ColorSelectionMethod.colorSeed
-              ? colorSelected.color
-              : imageColorScheme!.primary,
+          colorSchemeSeed:
+              colorSelectionMethod == ColorSelectionMethod.colorSeed
+                  ? colorSelected.color
+                  : imageColorScheme!.primary,
           useMaterial3: useMaterial3,
           brightness: Brightness.dark,
         ),
-      home: FutureBuilder(
-        future: _fbApp,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            if (kDebugMode) {
-              print('You have an error! ${snapshot.error.toString()}');
+        home: FutureBuilder(
+          future: _fbApp,
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              if (kDebugMode) {
+                print('You have an error! ${snapshot.error.toString()}');
+              }
+              return const Text('Something went wrong!');
+            } else if (snapshot.hasData) {
+              return const LandingPage(title: 'Hello! 👋');
+            } else {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
             }
-            return const Text('Something went wrong!');
-          } else if (snapshot.hasData) {
-            return const LandingPage(title: 'Hello! 👋');
-          } else {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        },
-      )
-    );
+          },
+        ));
   }
 }
