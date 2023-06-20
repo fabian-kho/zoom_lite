@@ -81,40 +81,41 @@ class _LandingPageState extends State<LandingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 60),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: Text(
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            title: Text(
               widget.title,
               style: const TextStyle(
-                fontSize: 24,
+                fontSize: 32,
                 fontWeight: FontWeight.w400,
               ),
             ),
+            pinned: true,
+            expandedHeight: 75,
           ),
-          Padding(
-            padding: const EdgeInsets.all(15),
+          SliverToBoxAdapter(
+            child: Padding(
+            padding: const EdgeInsets.all(20),
             child: SearchBox(onSearchChanged: _filterPresentations),
+            ),
           ),
-          const SizedBox(height: 20),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: const Text(
-                  'Recent Presentations',
-                  style: TextStyle(fontSize: 20),
-                ),
+          const SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
+              child: Text(
+                'Recent Presentations',
+                style: TextStyle(fontSize: 26),
+              ),
+            ),
           ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: filteredPresentations.isNotEmpty ? filteredPresentations.length : 1,
-              itemBuilder: (context, index) {
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+                  (context, index) {
                 if (filteredPresentations.isEmpty) {
                   // Show skeleton item
                   return Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 15),
+                    margin: const EdgeInsets.symmetric(horizontal: 20),
                     child: ListTile(
                       contentPadding: const EdgeInsets.all(14),
                       shape: const RoundedRectangleBorder(
@@ -145,6 +146,7 @@ class _LandingPageState extends State<LandingPage> {
                   return filteredPresentations[index];
                 }
               },
+              childCount: filteredPresentations.isNotEmpty ? filteredPresentations.length : 1,
             ),
           ),
         ],
@@ -161,7 +163,6 @@ class _LandingPageState extends State<LandingPage> {
       ),
     );
   }
-
 }
 
 class SearchBox extends StatelessWidget {

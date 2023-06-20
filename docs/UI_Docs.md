@@ -82,6 +82,8 @@ There are three main pages:
 In Figma we have created wireframes for the application. The wireframes are available [here](https://www.figma.com/file/nhKYOe3ctBqtwVwMKXlw5w/Zoom-lite?type=design&node-id=0%3A1&t=7ucbBcvpRjc7epkW-1).
 
 ### Next Steps
+- make Presentation title unique
+  - if a lot of users use the application, there could be multiple presentations with the same name, so searching for a presentation by name would not work.
 - Add Authentication
   - This would allow users to have their own presentations and not share them with other users.
   - This could be done using Firebase Authentication.
