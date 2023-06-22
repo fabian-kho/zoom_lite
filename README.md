@@ -6,9 +6,11 @@ The Presentation App is a mobile application developed using Flutter that allows
 ## Screenshots
 
 *Landing Page*
+
 <img src="/docs/screenshots/landingpage.png" alt="Landing Page" width="250px">
 
 *Presentation Page*
+
 <img src="/docs/screenshots/presentationpage.png" alt="Presentation Page" width="250px">
 
 
