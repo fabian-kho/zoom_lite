@@ -3,6 +3,11 @@
 ## Description
 The Presentation App is a mobile application developed using Flutter that allows users to view and present PDF presentations on their devices. The app provides a user-friendly interface for navigating through presentation slides and supports both vertical and horizontal orientations. Users can search for existing presentations or create new ones. The app aims to enhance the presentation experience by providing a convenient and intuitive platform.
 
+### Technologies Used
+- Flutter
+- Dart
+- Firebase & Firestorage
+
 ## Documentation
 - [User Interface Design Documentation](/docs/UI_Docs.md)
 - [API Documentation](/docs/API_Docs.md)
@@ -27,8 +32,3 @@ The Presentation App is a mobile application developed using Flutter that allows
 ## Usage
 1. Run the app on a simulator or physical device: `flutter run`
 2. Follow the instructions on the screen to launch the app and explore its features.
-
-## Technologies Used
-- Flutter
-- Dart
-- Firebase & Firestorage
