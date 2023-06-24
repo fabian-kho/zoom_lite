@@ -22,7 +22,7 @@ class LandingPage extends StatefulWidget {
 
 class _LandingPageState extends State<LandingPage> {
   final DatabaseReference _databaseRef =
-  FirebaseDatabase.instance.ref().child('presentations');
+      FirebaseDatabase.instance.ref().child('presentations');
 
   List<ListItem> allPresentations = [];
   List<ListItem> filteredPresentations = [];
@@ -56,13 +56,11 @@ class _LandingPageState extends State<LandingPage> {
     return Image.memory(Uint8List.view(pngData!.buffer));
   }
 
-
-
   void _fetchPresentations() {
     _databaseRef.onChildAdded.listen((event) async {
       final key = event.snapshot.key as String;
-      Map<String, dynamic> _presentation =
-      Map<String, dynamic>.from(event.snapshot.value as Map<dynamic, dynamic>);
+      Map<String, dynamic> _presentation = Map<String, dynamic>.from(
+          event.snapshot.value as Map<dynamic, dynamic>);
       final presentation = Presentation.fromRTDB(_presentation);
 
       // Download the PDF file
@@ -74,7 +72,7 @@ class _LandingPageState extends State<LandingPage> {
       final listItem = ListItem(
         key: Key(key),
         title: presentation.title,
-        thumbnail: thumbnail,
+        thumbnail: Image.asset('assets/images/background_image.png'),
         onTap: () {
           Navigator.push(
             context,
@@ -119,20 +117,53 @@ class _LandingPageState extends State<LandingPage> {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            title: Text(
-              widget.title,
-              style: const TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.w400,
-              ),
+            title: Row(
+              children: [
+                Image.asset(
+                  "assets/images/logo.png", // Pfad zum Logo
+                  height: 32,
+                  width: 32,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  widget.title,
+                  style: const TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
             ),
             pinned: true,
             expandedHeight: 75,
+            backgroundColor: Colors.indigoAccent, // App bar background color
           ),
           SliverToBoxAdapter(
             child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: SearchBox(onSearchChanged: _filterPresentations),
+              padding: const EdgeInsets.all(20),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.secondaryContainer,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: TextField(
+                  onChanged: _filterPresentations,
+                  decoration: const InputDecoration(
+                    contentPadding: EdgeInsets.all(10),
+                    prefixIcon: Icon(Icons.search),
+                    prefixIconConstraints: BoxConstraints(
+                      minWidth: 25,
+                      maxHeight: 25,
+                    ),
+                    border: InputBorder.none,
+                    hintText: 'Search for presentations',
+                    hintStyle: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
           const SliverToBoxAdapter(
@@ -146,34 +177,14 @@ class _LandingPageState extends State<LandingPage> {
           ),
           SliverList(
             delegate: SliverChildBuilderDelegate(
-                  (context, index) {
+              (context, index) {
                 if (filteredPresentations.isEmpty) {
-                  // Show skeleton item
+                  // Show message when no presentations are found
                   return Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                    margin:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                     child: ListTile(
-                      contentPadding: const EdgeInsets.all(14),
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
-                      ),
-                      tileColor: Theme.of(context).colorScheme.secondaryContainer,
-                      title: SizedBox(
-                        height: 20,
-                        child: Container(
-                          color: Colors.grey.withOpacity(0.3),
-                        ),
-                      ),
-                      subtitle: SizedBox(
-                        height: 12,
-                        child: Container(
-                          color: Colors.grey.withOpacity(0.2),
-                        ),
-                      ),
-                      leading: Container(
-                        width: 40,
-                        height: 40,
-                        color: Colors.grey.withOpacity(0.2),
-                      ),
+                      title: const Text('No presentations found.'),
                     ),
                   );
                 } else {
@@ -181,13 +192,16 @@ class _LandingPageState extends State<LandingPage> {
                   return filteredPresentations[index];
                 }
               },
-              childCount: filteredPresentations.isNotEmpty ? filteredPresentations.length : 1,
+              childCount: filteredPresentations.isNotEmpty
+                  ? filteredPresentations.length
+                  : 1,
             ),
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+        backgroundColor:
+            Colors.indigoAccent, // Floating action button background color
         onPressed: () {
           showDialog(
             context: context,
@@ -195,39 +209,6 @@ class _LandingPageState extends State<LandingPage> {
           );
         },
         child: const Icon(Icons.add),
-      ),
-    );
-  }
-}
-
-class SearchBox extends StatelessWidget {
-  final Function(String) onSearchChanged;
-
-  const SearchBox({Key? key, required this.onSearchChanged}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 15),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.secondaryContainer,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: TextField(
-        onChanged: onSearchChanged,
-        decoration: const InputDecoration(
-          contentPadding: EdgeInsets.all(10),
-          prefixIcon: Icon(Icons.search),
-          prefixIconConstraints: BoxConstraints(
-            minWidth: 25,
-            maxHeight: 25,
-          ),
-          border: InputBorder.none,
-          hintText: 'Search for presentations',
-          hintStyle: TextStyle(
-            fontSize: 16,
-          ),
-        ),
       ),
     );
   }

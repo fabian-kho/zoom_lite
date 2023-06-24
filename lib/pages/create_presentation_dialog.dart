@@ -47,8 +47,7 @@ class _CreatePresentationDialogState extends State<CreatePresentationDialog> {
       return;
     }
 
-    final FilePickerResult? result =
-    await FilePicker.platform.pickFiles(
+    final FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['pdf'],
     );
@@ -58,7 +57,7 @@ class _CreatePresentationDialogState extends State<CreatePresentationDialog> {
         _isLoading = true;
       });
 
-    upload(result);
+      upload(result);
     }
   }
 
@@ -67,17 +66,16 @@ class _CreatePresentationDialogState extends State<CreatePresentationDialog> {
 
     final firebase_storage.FirebaseStorage storage =
         firebase_storage.FirebaseStorage.instance;
-    final firebase_storage.Reference storageRef = storage
-        .ref()
-        .child('presentations')
-        .child(_textFieldController.text);
+    final firebase_storage.Reference storageRef =
+        storage.ref().child('presentations').child(_textFieldController.text);
     final firebase_storage.UploadTask uploadTask =
-    storageRef.putFile(File(filePath!));
+        storageRef.putFile(File(filePath!));
 
     uploadTask.whenComplete(() async {
       try {
         final String downloadUrl = await storageRef.getDownloadURL();
-        final DatabaseReference presentationRef = _databaseRef.child('presentations').push();
+        final DatabaseReference presentationRef =
+            _databaseRef.child('presentations').push();
 
         // store the presentation data in the presentation object
         presentation = {
@@ -163,7 +161,9 @@ class _CreatePresentationDialogState extends State<CreatePresentationDialog> {
         ),
         TextButton(
           onPressed: _validateAndUpload,
-          child: _isLoading ? const CircularProgressIndicator() : const Text('Upload'),
+          child: _isLoading
+              ? const CircularProgressIndicator()
+              : const Text('Upload'),
         ),
       ],
     );

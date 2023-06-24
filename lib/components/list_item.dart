@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
 class ListItem extends StatelessWidget {
-  const ListItem({Key? key, required this.title, required this.thumbnail, required this.onTap})
+  const ListItem(
+      {Key? key,
+      required this.title,
+      required this.thumbnail,
+      required this.onTap})
       : super(key: key);
   final String title;
   final VoidCallback onTap;

@@ -99,3 +99,99 @@ To address the above objectives, we can then ask the following questions:
 
 10. How would you rate your overall satisfaction with the product/service on a scale of 1-10?
     - Peter: I would rate my overall satisfaction as 9 out of 10.
+
+
+**Person 3: Welf (M), 28 years old**
+1. What are your first impressions of the user interface?
+    - Welf: The user interface is clean and visually appealing. It has a modern design that caught my attention immediately.
+
+2. Can you identify the main features of the product/service?
+    - Welf: Yes, the main features of the product/service are creating and managing presentations, searching for presentations, and presenting to an audience
+
+3. How easy was it for you to find and use the features you wanted?
+    - Welf: It was quite easy to find and use the features. The layout is intuitive, and the search functionality helped me quickly find the presentations I was interested in.
+
+4. Were there moments when you felt unsure or had difficulty continuing? If so, at what point?
+    -Welf: No, I didn't encounter any moments of uncertainty or difficulty. The navigation was smooth, and the features were straightforward to use.
+
+5. Did you have trouble navigating the product/service?
+    -Welf: No, the navigation was well-organized, and I didn't face any issues while moving through different sections of the app.
+
+6. Did you find the user interface engaging and user-friendly?
+    -Welf: Yes, the user interface is both engaging and user-friendly. The visuals are appealing, and the overall layout makes it easy to interact with the app
+
+7. What improvements would you suggest for the current user interface?
+    -Welf: Explanation text when opening for the first time; Possibly default sample presentation
+
+8. Are there any other features or aspects you think we should consider?
+    -Welf: No
+
+9. Does the product/service meet user expectations and needs?
+    -Welf: Yes, the product/service meets my expectations and fulfills my needs for creating and managing presentations effectively.
+
+10. How would you rate your overall satisfaction with the product/service on a scale of 1-10?
+    -Welf: I would rate my overall satisfaction as 9 out of 10.
+
+
+**Person 3: Alina (F), 29 years old**
+
+1. What are your first impressions of the user interface?
+    -Alina: The user interface looks sleek and modern. It gives a professional vibe and makes me eager to explore the app further.
+
+2. Can you identify the main features of the product/service?
+    -Alina: The main features of the product/service seem to be creating presentations, browsing and searching for presentations, and presenting them to an audience.
+
+3. How easy was it for you to find and use the features you wanted?
+    -Alina: It was quite easy to find and use the features I wanted. The layout is well-organized, and the app provides clear labels and icons for different functions.
+
+4. Were there moments when you felt unsure or had difficulty continuing? If so, at what point?
+    -Alina: I didn't face any moments of uncertainty or difficulty while using the app. The flow from one feature to another was seamless.
+
+5. Did you have trouble navigating the product/service?
+    -Alina: No, the navigation was smooth, and I didn't encounter any issues while navigating through different sections of the app.
+    
+6. Did you find the user interface engaging and user-friendly?
+    -Alina: Yes, the user interface is engaging and user-friendly. The design is visually appealing, and the interface elements are well-placed, making it easy to interact with the app.
+
+7. What improvements would you suggest for the current user interface?
+    -Alina: One improvement I would suggest is adding more visual cues or tooltips to guide users who might be less familiar with presentation software. It would enhance the onboarding experience.
+
+8. Are there any other features or aspects you think we should consider?
+    -Alina: It would be beneficial to include a feature for real-time audience interaction, such as live polls or Q&A sessions during presentations. It could make presentations more interactive and engaging.
+
+9. Does the product/service meet user expectations and needs?
+    -Alina: es, the product/service meets my expectations and fulfills my needs for creating and delivering presentations effectively.
+
+10. How would you rate your overall satisfaction with the product/service on a scale of 1-10?
+    -Alina: I would rate my overall satisfaction as 8 out of 10. The app provides a solid presentation experience
+
+
+**Person 3: Mumu (F), 22 years old**
+
+1. What are your first impressions of the user interface?
+    mumu:
+2. Can you identify the main features of the product/service?
+    mumu: yes, the characteristics of the product are to allow the user to either take part in a presentation in progress, or to create one.
+
+3. How easy was it for you to find and use the features you wanted?
+    mumu: everything is already visible and clearly defined on the home page, so there hasn't been much effort to make on this side.
+
+4. Were there moments when you felt unsure or had difficulty continuing? If so, at what point?
+    mumu: not really
+
+5. Did you have trouble navigating the product/service?
+    mumu: 
+
+6. Did you find the user interface engaging and user-friendly?
+    mumu: Yes, with the little word "Hello".
+
+7. What improvements would you suggest for the current user interrface?
+    mumu: maybe some more picturesS
+
+8. Are there any other features or aspects you think we should consider?S
+    mumu: maybe an interface to register and find out what time the presentation started
+
+9. Does the product/service meet user expectations and needs?
+    mumu: yes
+10. How would you rate your overall satisfaction with the product/service on a scale of 1-10?
+    mumu: I would rate my overall satisfaction as 8,5 out of 10r
